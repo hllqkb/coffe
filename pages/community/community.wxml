@@ -1,15 +1,15 @@
 <!--pages/community/community.wxml-->
 <view class="container">
   <!-- 头部区域 -->
-  <view class="header">
+  <view class="header" style="width: 400px; height: 287rpx; display: block; box-sizing: border-box; position: relative; left: 0rpx; top: -161rpx">
     <view class="header-content">
-      <text class="title">咖啡社区</text>
-      <text class="subtitle">分享你的种植心得</text>
+      <text class="title" style="width: 323rpx; display: block; box-sizing: content-box">咖啡社区</text>
+      <text class="subtitle" style="position: relative; left: -145rpx; top: -12rpx">分享你的种植心得</text>
     </view>
     
     <!-- 搜索和发布按钮 -->
     <view class="header-actions">
-      <view class="search-btn" bindtap="showSearch">
+      <view class="search-btn" bindtap="showSearch" style="width: 459rpx; display: flex; box-sizing: border-box; height: 60rpx">
         <image src="/images/search-icon.png" class="search-icon"></image>
       </view>
       <view class="publish-btn" catchtap="showPublishModal">
@@ -49,7 +49,7 @@
     <!-- 帖子项 -->
     <view class="post-item" wx:for="{{posts}}" wx:key="id" data-id="{{item.id}}" bindtap="openPostDetail">
       <!-- 用户信息 -->
-      <view class="post-header">
+      <view class="post-header" style="height: 105rpx; display: block; box-sizing: border-box; width: 703rpx">
         <view class="user-info">
           <image class="user-avatar" src="{{item.user.avatar}}"></image>
           <view class="user-details">
@@ -91,7 +91,7 @@
       </view>
 
       <!-- 互动区域 -->
-      <view class="post-actions">
+      <view class="post-actions" style="width: 750rpx; height: 82rpx; display: flex; box-sizing: border-box">
         <view class="action-item" data-id="{{item.id}}" catchtap="togglePostLike">
           <image 
             class="action-icon {{item.liked ? 'liked' : ''}}" 

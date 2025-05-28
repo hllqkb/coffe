@@ -174,9 +174,7 @@
 
   <!-- 浮动操作按钮 -->
   <view class="floating-actions">
-    <button class="floating-btn" bindtap="addNewTree">
-      <image src="/images/add-tree-icon.png"></image>
-    </button>
+    
   </view>
 </view>
 
