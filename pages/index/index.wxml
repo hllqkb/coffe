@@ -1,0 +1,140 @@
+<!--index.wxml-->
+<view class="container">
+  <!-- 头部欢迎区域 -->
+  <view class="header">
+    <view class="welcome-text">欢迎来到咖啡小树</view>
+    <view class="subtitle">种植属于你的咖啡树</view>
+  </view>
+
+  <!-- 用户信息卡片 -->
+  <view class="user-card card">
+    <view class="user-info">
+      <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-details">
+        <view class="nickname">{{userInfo.nickName || '咖啡爱好者'}}</view>
+        <view class="level">等级: {{userLevel}}</view>
+      </view>
+    </view>
+    
+    <!-- 资源显示 -->
+    <view class="resources">
+      <view class="resource-item">
+        <image src="/images/water.png"></image>
+        <text>{{waterCount}}</text>
+      </view>
+      <view class="resource-item">
+        <image src="/images/fertilizer.png"></image>
+        <text>{{fertilizerCount}}</text>
+      </view>
+      <view class="resource-item">
+        <image src="/images/coin.png"></image>
+        <text>{{coinCount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快速操作区域 -->
+  <view class="quick-actions">
+    <view class="action-btn" bindtap="goToGarden">
+      <image src="/images/garden-icon.png"></image>
+      <text>我的庄园</text>
+    </view>
+    <view class="action-btn" bindtap="goToSignIn">
+      <image src="/images/signin-icon.png"></image>
+      <text>每日签到</text>
+    </view>
+    <view class="action-btn" bindtap="goToShop">
+      <image src="/images/shop-icon.png"></image>
+      <text>道具商店</text>
+    </view>
+    <view class="action-btn" bindtap="goToKnowledge">
+      <image src="/images/knowledge-icon.png"></image>
+      <text>咖啡知识</text>
+    </view>
+  </view>
+
+  <!-- 咖啡品种选择 -->
+  <view class="coffee-varieties card" wx:if="{{!hasSelectedVariety}}">
+    <view class="card-header">选择你的咖啡品种</view>
+    <scroll-view class="varieties-scroll" scroll-x="true">
+      <view class="variety-item" wx:for="{{coffeeVarieties}}" wx:key="id" bindtap="selectVariety" data-variety="{{item}}">
+        <image src="{{item.image}}" mode="aspectFill"></image>
+        <view class="variety-name">{{item.name}}</view>
+        <view class="variety-desc">{{item.description}}</view>
+        <view class="growth-time">成长周期: {{item.growthTime}}天</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 我的咖啡树预览 -->
+  <view class="my-trees card" wx:if="{{myTrees.length > 0}}">
+    <view class="card-header">我的咖啡树</view>
+    <scroll-view class="trees-scroll" scroll-x="true">
+      <view class="tree-item" wx:for="{{myTrees}}" wx:key="_id" bindtap="goToTree" data-tree="{{item}}">
+        <image src="{{item.currentStageImage}}" mode="aspectFill"></image>
+        <view class="tree-name">{{item.varietyName}}</view>
+        <view class="tree-stage">{{item.currentStageName}}</view>
+        <view class="progress-container">
+          <view class="progress-bar" style="width: {{item.progress}}%"></view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 今日任务 -->
+  <view class="daily-tasks card">
+    <view class="card-header">今日任务</view>
+    <view class="task-list">
+      <view class="task-item" wx:for="{{dailyTasks}}" wx:key="id">
+        <view class="task-info">
+          <view class="task-name">{{item.name}}</view>
+          <view class="task-reward">奖励: {{item.reward}}</view>
+        </view>
+        <view class="task-status">
+          <view class="tag {{item.completed ? 'tag-success' : 'tag-primary'}}">
+            {{item.completed ? '已完成' : '进行中'}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 咖啡知识推荐 -->
+  <view class="knowledge-recommend card">
+    <view class="card-header">咖啡小知识</view>
+    <view class="knowledge-item" wx:for="{{recommendKnowledge}}" wx:key="id" bindtap="goToKnowledgeDetail" data-knowledge="{{item}}">
+      <image src="{{item.image}}" mode="aspectFill"></image>
+      <view class="knowledge-content">
+        <view class="knowledge-title">{{item.title}}</view>
+        <view class="knowledge-summary">{{item.summary}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="bottom-actions">
+    <button class="btn btn-primary" bindtap="claimNewTree" wx:if="{{canClaimNewTree}}">免费认领咖啡树</button>
+    <button class="btn btn-secondary" bindtap="shareApp">分享给朋友</button>
+  </view>
+</view>
+
+<!-- 品种选择模态框 -->
+<view class="modal" wx:if="{{showVarietyModal}}">
+  <view class="modal-content">
+    <view class="modal-header">选择咖啡品种</view>
+    <view class="variety-detail">
+      <image src="{{selectedVariety.image}}" mode="aspectFill"></image>
+      <view class="variety-info">
+        <view class="variety-name">{{selectedVariety.name}}</view>
+        <view class="variety-description">{{selectedVariety.description}}</view>
+        <view class="growth-info">
+          <text>成长周期: {{selectedVariety.growthTime}}天</text>
+        </view>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn btn-secondary" bindtap="cancelSelectVariety">取消</button>
+      <button class="btn btn-primary" bindtap="confirmSelectVariety">确认选择</button>
+    </view>
+  </view>
+</view>

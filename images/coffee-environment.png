@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- 天空背景 -->
+  <rect width="64" height="40" fill="#87CEEB"/>
+  
+  <!-- 云朵 -->
+  <ellipse cx="15" cy="12" rx="6" ry="3" fill="white" opacity="0.8"/>
+  <ellipse cx="12" cy="10" rx="4" ry="2" fill="white" opacity="0.8"/>
+  <ellipse cx="18" cy="10" rx="4" ry="2" fill="white" opacity="0.8"/>
+  
+  <ellipse cx="50" cy="8" rx="5" ry="2.5" fill="white" opacity="0.8"/>
+  <ellipse cx="47" cy="6" rx="3" ry="1.5" fill="white" opacity="0.8"/>
+  <ellipse cx="53" cy="6" rx="3" ry="1.5" fill="white" opacity="0.8"/>
+  
+  <!-- 太阳 -->
+  <circle cx="55" cy="15" r="4" fill="#FFD700"/>
+  <path d="M 55 7 L 55 5" stroke="#FFD700" stroke-width="1"/>
+  <path d="M 63 15 L 61 15" stroke="#FFD700" stroke-width="1"/>
+  <path d="M 59.8 10.2 L 61.2 8.8" stroke="#FFD700" stroke-width="1"/>
+  <path d="M 59.8 19.8 L 61.2 21.2" stroke="#FFD700" stroke-width="1"/>
+  
+  <!-- 山脉 -->
+  <path d="M 0 35 L 15 20 L 30 30 L 45 15 L 64 25 L 64 40 L 0 40 Z" fill="#8FBC8F"/>
+  <path d="M 0 40 L 20 25 L 40 35 L 64 20 L 64 40 Z" fill="#228B22" opacity="0.7"/>
+  
+  <!-- 地面 -->
+  <rect x="0" y="40" width="64" height="24" fill="#8B4513"/>
+  <rect x="0" y="40" width="64" height="4" fill="#654321"/>
+  
+  <!-- 咖啡树 -->
+  <!-- 主干 -->
+  <rect x="30" y="25" width="4" height="20" fill="#8B4513"/>
+  
+  <!-- 树冠 -->
+  <ellipse cx="32" cy="20" rx="12" ry="8" fill="#228B22"/>
+  <ellipse cx="28" cy="18" rx="8" ry="6" fill="#32CD32" opacity="0.8"/>
+  <ellipse cx="36" cy="22" rx="8" ry="6" fill="#32CD32" opacity="0.8"/>
+  
+  <!-- 咖啡果实 -->
+  <circle cx="26" cy="18" r="1.5" fill="#DC143C"/>
+  <circle cx="38" cy="20" r="1.5" fill="#B22222"/>
+  <circle cx="30" cy="16" r="1.2" fill="#DC143C"/>
+  <circle cx="34" cy="24" r="1.3" fill="#8B0000"/>
+  
+  <!-- 其他植被 -->
+  <ellipse cx="10" cy="42" rx="6" ry="3" fill="#228B22"/>
+  <ellipse cx="54" cy="43" rx="5" ry="2.5" fill="#32CD32"/>
+  
+  <!-- 雨滴 -->
+  <ellipse cx="20" cy="25" rx="0.5" ry="2" fill="#4169E1" opacity="0.6"/>
+  <ellipse cx="45" cy="30" rx="0.5" ry="2" fill="#4169E1" opacity="0.6"/>
+  <ellipse cx="8" cy="28" rx="0.5" ry="1.5" fill="#4169E1" opacity="0.6"/>
+  
+  <!-- 温度计图标 -->
+  <rect x="5" y="50" width="2" height="8" fill="#FF4500" rx="1"/>
+  <circle cx="6" cy="59" r="2" fill="#FF4500"/>
+  <text x="10" y="57" font-family="Arial" font-size="6" fill="#8B4513">适宜温度</text>
+  
+  <!-- 湿度图标 -->
+  <path d="M 50 52 Q 52 50 54 52 Q 52 56 50 52" fill="#4169E1"/>
+  <text x="45" y="62" font-family="Arial" font-size="6" fill="#8B4513">适宜湿度</text>
+</svg>

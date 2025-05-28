@@ -1,0 +1,698 @@
+/* pages/profile/profile.wxss */
+.profile-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  position: relative;
+}
+
+/* 头部背景 */
+.header-bg {
+  position: relative;
+  height: 300rpx;
+  overflow: hidden;
+}
+
+.bg-image {
+  width: 100%;
+  height: 100%;
+}
+
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.8), rgba(160, 82, 45, 0.6));
+}
+
+/* 用户信息卡片 */
+.user-card {
+  position: relative;
+  margin: -100rpx 30rpx 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx 30rpx;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  position: relative;
+  margin-right: 30rpx;
+}
+
+.avatar-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  border: 4rpx solid #fff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.level-badge {
+  position: absolute;
+  bottom: -5rpx;
+  right: -5rpx;
+  background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+  color: white;
+  font-size: 20rpx;
+  padding: 4rpx 8rpx;
+  border-radius: 10rpx;
+  border: 2rpx solid white;
+  font-weight: bold;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.user-title {
+  font-size: 28rpx;
+  color: #8b4513;
+  margin-bottom: 8rpx;
+  background: linear-gradient(45deg, #8b4513, #a0522d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 500;
+}
+
+.join-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.edit-btn {
+  width: 60rpx;
+  height: 60rpx;
+  background: #f8f9fa;
+  border-radius: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1rpx solid #e9ecef;
+}
+
+.edit-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* 统计数据 */
+.stats-section {
+  margin: 0 30rpx 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.stats-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 20rpx 10rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  border: 1rpx solid #e9ecef;
+}
+
+.stat-number {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #8b4513;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 资源展示 */
+.resources-section {
+  margin: 0 30rpx 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.resource-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 16rpx;
+  border: 1rpx solid #dee2e6;
+}
+
+.resource-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 15rpx;
+}
+
+.resource-info {
+  text-align: center;
+}
+
+.resource-name {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.resource-amount {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #8b4513;
+}
+
+/* 成就展示 */
+.achievements-section {
+  margin: 0 30rpx 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.view-all {
+  font-size: 26rpx;
+  color: #8b4513;
+  padding: 8rpx 16rpx;
+  background: rgba(139, 69, 19, 0.1);
+  border-radius: 20rpx;
+}
+
+.achievements-scroll {
+  white-space: nowrap;
+}
+
+.achievement-item {
+  display: inline-block;
+  text-align: center;
+  margin-right: 30rpx;
+  width: 120rpx;
+}
+
+.achievement-icon {
+  position: relative;
+  width: 80rpx;
+  height: 80rpx;
+  margin: 0 auto 15rpx;
+  border-radius: 40rpx;
+  overflow: hidden;
+  border: 3rpx solid #e9ecef;
+}
+
+.achievement-icon.unlocked {
+  border-color: #8b4513;
+  box-shadow: 0 4rpx 12rpx rgba(139, 69, 19, 0.3);
+}
+
+.achievement-icon image {
+  width: 100%;
+  height: 100%;
+}
+
+.lock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lock-overlay::after {
+  content: '🔒';
+  font-size: 30rpx;
+}
+
+.achievement-name {
+  font-size: 22rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+  white-space: normal;
+  line-height: 1.3;
+}
+
+.achievement-progress {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 功能菜单 */
+.menu-section {
+  margin: 0 30rpx 30rpx;
+}
+
+.menu-group {
+  background: white;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f8f9fa;
+  position: relative;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background: #f8f9fa;
+}
+
+.menu-icon {
+  width: 50rpx;
+  height: 50rpx;
+  margin-right: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon image {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.menu-badge {
+  background: #ff4757;
+  color: white;
+  font-size: 20rpx;
+  padding: 4rpx 8rpx;
+  border-radius: 10rpx;
+  margin-right: 20rpx;
+  min-width: 32rpx;
+  text-align: center;
+}
+
+.menu-arrow {
+  width: 30rpx;
+  height: 30rpx;
+}
+
+.menu-arrow image {
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+}
+
+/* 版本信息 */
+.version-info {
+  text-align: center;
+  padding: 30rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #8b4513;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 模态框 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 60rpx;
+}
+
+.edit-modal,
+.achievement-modal {
+  background: white;
+  border-radius: 20rpx;
+  width: 100%;
+  max-width: 600rpx;
+  max-height: 80vh;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  width: 50rpx;
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close image {
+  width: 30rpx;
+  height: 30rpx;
+}
+
+.modal-content {
+  padding: 30rpx;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* 编辑表单 */
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  font-weight: 500;
+}
+
+.avatar-upload {
+  position: relative;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  overflow: hidden;
+  border: 2rpx dashed #ddd;
+}
+
+.upload-avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-overlay image {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.form-input {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  background: #f8f9fa;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  background: #f8f9fa;
+  resize: none;
+}
+
+.modal-footer {
+  display: flex;
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+  gap: 20rpx;
+}
+
+.cancel-btn,
+.confirm-btn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  border: none;
+}
+
+.cancel-btn {
+  background: #f8f9fa;
+  color: #666;
+}
+
+.confirm-btn {
+  background: linear-gradient(45deg, #8b4513, #a0522d);
+  color: white;
+}
+
+/* 成就详情 */
+.achievement-detail {
+  text-align: center;
+}
+
+.achievement-large-icon {
+  position: relative;
+  width: 150rpx;
+  height: 150rpx;
+  margin: 0 auto 30rpx;
+  border-radius: 75rpx;
+  overflow: hidden;
+  border: 4rpx solid #e9ecef;
+}
+
+.achievement-large-icon.unlocked {
+  border-color: #8b4513;
+  box-shadow: 0 8rpx 24rpx rgba(139, 69, 19, 0.3);
+}
+
+.achievement-large-icon image {
+  width: 100%;
+  height: 100%;
+}
+
+.achievement-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.achievement-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 30rpx;
+}
+
+.achievement-progress-bar {
+  margin-bottom: 30rpx;
+}
+
+.progress-bg {
+  width: 100%;
+  height: 12rpx;
+  background: #f0f0f0;
+  border-radius: 6rpx;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(45deg, #8b4513, #a0522d);
+  border-radius: 6rpx;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.achievement-reward {
+  margin-bottom: 30rpx;
+}
+
+.reward-title {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  font-weight: 500;
+}
+
+.reward-items {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+}
+
+.reward-item {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 20rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
+  border: 1rpx solid #e9ecef;
+}
+
+.reward-icon {
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: 8rpx;
+}
+
+.reward-amount {
+  font-size: 24rpx;
+  color: #8b4513;
+  font-weight: bold;
+}
+
+.unlock-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(100rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式适配 */
+@media (max-width: 400px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15rpx;
+  }
+  
+  .resources-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .user-card {
+    margin: -80rpx 20rpx 20rpx;
+    padding: 30rpx 20rpx 20rpx;
+  }
+  
+  .avatar-image {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50rpx;
+  }
+  
+  .user-name {
+    font-size: 32rpx;
+  }
+}

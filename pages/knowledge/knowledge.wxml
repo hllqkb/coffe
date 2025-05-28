@@ -1,0 +1,275 @@
+<!--knowledge.wxml-->
+<view class="container">
+  <!-- 头部搜索区域 -->
+  <view class="search-header">
+    <view class="search-box">
+      <image class="search-icon" src="/images/search-icon.png"></image>
+      <input class="search-input" 
+             placeholder="搜索咖啡知识" 
+             value="{{searchKeyword}}"
+             bindinput="onSearchInput"
+             bindconfirm="onSearch"/>
+    </view>
+  </view>
+
+  <!-- 分类导航 -->
+  <view class="category-nav">
+    <scroll-view class="category-scroll" scroll-x="true">
+      <view class="category-item {{currentCategory === item.id ? 'active' : ''}}" 
+            wx:for="{{categories}}" 
+            wx:key="id"
+            bindtap="selectCategory" 
+            data-category="{{item}}">
+        <image src="{{item.icon}}"></image>
+        <text>{{item.name}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 推荐内容 -->
+  <view class="featured-section" wx:if="{{currentCategory === 'all'}}">
+    <view class="section-title">
+      <image src="/images/star-icon.png"></image>
+      <text>今日推荐</text>
+    </view>
+    
+    <swiper class="featured-swiper" 
+            indicator-dots="true" 
+            autoplay="true" 
+            interval="5000" 
+            duration="500">
+      <swiper-item wx:for="{{featuredContent}}" wx:key="id">
+        <view class="featured-item" bindtap="viewContent" data-content="{{item}}">
+          <image src="{{item.coverImage}}" mode="aspectFill"></image>
+          <view class="featured-overlay">
+            <view class="featured-title">{{item.title}}</view>
+            <view class="featured-desc">{{item.summary}}</view>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 内容列表 -->
+  <view class="content-list">
+    <view class="section-title" wx:if="{{currentCategory !== 'all'}}">
+      <text>{{currentCategoryName}}</text>
+    </view>
+    
+    <!-- 加载状态 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <image src="/images/loading.gif"></image>
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && contentList.length === 0}}">
+      <image src="/images/empty-knowledge.png"></image>
+      <text>暂无相关内容</text>
+      <text>换个关键词试试吧</text>
+    </view>
+    
+    <!-- 内容卡片 -->
+    <view class="content-card" 
+          wx:for="{{contentList}}" 
+          wx:key="id"
+          bindtap="viewContent" 
+          data-content="{{item}}">
+      
+      <!-- 视频内容 -->
+      <view class="video-content" wx:if="{{item.type === 'video'}}">
+        <view class="video-container">
+          <image class="video-cover" src="{{item.coverImage}}" mode="aspectFill"></image>
+          <view class="play-button">
+            <image src="/images/play-icon.png"></image>
+          </view>
+          <view class="video-duration">{{item.duration}}</view>
+        </view>
+        
+        <view class="content-info">
+          <view class="content-title">{{item.title}}</view>
+          <view class="content-meta">
+            <view class="meta-item">
+              <image src="/images/view-icon.png"></image>
+              <text>{{item.viewCount}}</text>
+            </view>
+            <view class="meta-item">
+              <image src="/images/like-icon.png"></image>
+              <text>{{item.likeCount}}</text>
+            </view>
+            <view class="meta-item">
+              <image src="/images/time-icon.png"></image>
+              <text>{{item.publishTime}}</text>
+            </view>
+          </view>
+          <view class="content-summary">{{item.summary}}</view>
+        </view>
+      </view>
+      
+      <!-- 文章内容 -->
+      <view class="article-content" wx:if="{{item.type === 'article'}}">
+        <view class="article-header">
+          <view class="content-info">
+            <view class="content-title">{{item.title}}</view>
+            <view class="content-summary">{{item.summary}}</view>
+            <view class="content-meta">
+              <view class="meta-item">
+                <image src="/images/read-icon.png"></image>
+                <text>{{item.readCount}}</text>
+              </view>
+              <view class="meta-item">
+                <image src="/images/time-icon.png"></image>
+                <text>{{item.publishTime}}</text>
+              </view>
+            </view>
+          </view>
+          <image class="article-thumb" src="{{item.coverImage}}" mode="aspectFill"></image>
+        </view>
+      </view>
+      
+      <!-- 问答内容 -->
+      <view class="qa-content" wx:if="{{item.type === 'qa'}}">
+        <view class="qa-question">
+          <image class="qa-icon" src="/images/question-icon.png"></image>
+          <text class="question-text">{{item.question}}</text>
+        </view>
+        <view class="qa-answer">
+          <text>{{item.answer}}</text>
+        </view>
+        <view class="qa-meta">
+          <view class="meta-item">
+            <image src="/images/expert-icon.png"></image>
+            <text>{{item.expertName}}</text>
+          </view>
+          <view class="meta-item">
+            <image src="/images/helpful-icon.png"></image>
+            <text>{{item.helpfulCount}}人觉得有用</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 内容标签 -->
+      <view class="content-tags">
+        <view class="tag" wx:for="{{item.tags}}" wx:key="*this">{{item}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部加载更多 -->
+  <view class="load-more" wx:if="{{hasMore && !loading}}">
+    <button class="load-more-btn" bindtap="loadMore">加载更多</button>
+  </view>
+  
+  <view class="no-more" wx:if="{{!hasMore && contentList.length > 0}}">
+    <text>没有更多内容了</text>
+  </view>
+</view>
+
+<!-- 内容详情模态框 -->
+<view class="modal content-modal" wx:if="{{showContentModal}}">
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">{{selectedContent.title}}</text>
+      <button class="close-btn" bindtap="closeContentModal">
+        <image src="/images/close-icon.png"></image>
+      </button>
+    </view>
+    
+    <scroll-view class="modal-body" scroll-y="true">
+      <!-- 视频播放 -->
+      <view class="video-player" wx:if="{{selectedContent.type === 'video'}}">
+        <video class="video" 
+               src="{{selectedContent.videoUrl}}"
+               poster="{{selectedContent.coverImage}}"
+               controls="true"
+               autoplay="false"
+               bindplay="onVideoPlay"
+               bindended="onVideoEnd">
+        </video>
+      </view>
+      
+      <!-- 文章内容 -->
+      <view class="article-detail" wx:if="{{selectedContent.type === 'article'}}">
+        <image class="detail-image" src="{{selectedContent.coverImage}}" mode="widthFix"></image>
+        <rich-text class="article-text" nodes="{{selectedContent.content}}"></rich-text>
+      </view>
+      
+      <!-- 问答详情 -->
+      <view class="qa-detail" wx:if="{{selectedContent.type === 'qa'}}">
+        <view class="detail-question">
+          <text class="question-label">问题：</text>
+          <text class="question-content">{{selectedContent.question}}</text>
+        </view>
+        <view class="detail-answer">
+          <text class="answer-label">回答：</text>
+          <rich-text class="answer-content" nodes="{{selectedContent.detailAnswer}}"></rich-text>
+        </view>
+        <view class="expert-info">
+          <image class="expert-avatar" src="{{selectedContent.expertAvatar}}"></image>
+          <view class="expert-details">
+            <text class="expert-name">{{selectedContent.expertName}}</text>
+            <text class="expert-title">{{selectedContent.expertTitle}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    
+    <!-- 互动区域 -->
+    <view class="interaction-area">
+      <button class="interaction-btn like-btn {{selectedContent.isLiked ? 'liked' : ''}}" 
+              bindtap="toggleLike">
+        <image src="/images/{{selectedContent.isLiked ? 'liked' : 'like'}}-icon.png"></image>
+        <text>{{selectedContent.likeCount}}</text>
+      </button>
+      
+      <button class="interaction-btn share-btn" bindtap="shareContent">
+        <image src="/images/share-icon.png"></image>
+        <text>分享</text>
+      </button>
+      
+      <button class="interaction-btn comment-btn" bindtap="showComments">
+        <image src="/images/comment-icon.png"></image>
+        <text>{{selectedContent.commentCount}}</text>
+      </button>
+    </view>
+  </view>
+</view>
+
+<!-- 评论区域 -->
+<view class="modal comment-modal" wx:if="{{showCommentModal}}">
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">评论区</text>
+      <button class="close-btn" bindtap="closeCommentModal">
+        <image src="/images/close-icon.png"></image>
+      </button>
+    </view>
+    
+    <scroll-view class="comment-list" scroll-y="true">
+      <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+        <image class="comment-avatar" src="{{item.userAvatar}}"></image>
+        <view class="comment-content">
+          <view class="comment-user">{{item.userName}}</view>
+          <view class="comment-text">{{item.content}}</view>
+          <view class="comment-time">{{item.createTime}}</view>
+        </view>
+      </view>
+      
+      <view class="empty-comments" wx:if="{{comments.length === 0}}">
+        <text>暂无评论，快来抢沙发吧！</text>
+      </view>
+    </scroll-view>
+    
+    <view class="comment-input-area">
+      <input class="comment-input" 
+             placeholder="写下你的想法..." 
+             value="{{commentText}}"
+             bindinput="onCommentInput"/>
+      <button class="send-comment-btn" 
+              bindtap="sendComment"
+              disabled="{{!commentText.trim()}}">
+        发送
+      </button>
+    </view>
+  </view>
+</view>

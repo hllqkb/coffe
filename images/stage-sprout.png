@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- 土壤 -->
+  <rect x="0" y="50" width="64" height="14" fill="#8B4513"/>
+  <rect x="0" y="53" width="64" height="11" fill="#654321"/>
+  
+  <!-- 主茎 -->
+  <rect x="30" y="35" width="4" height="18" fill="#228B22"/>
+  
+  <!-- 第一片叶子 -->
+  <ellipse cx="25" cy="40" rx="8" ry="4" fill="#90EE90" transform="rotate(-30 25 40)"/>
+  <path d="M 25 40 L 30 42" stroke="#228B22" stroke-width="1"/>
+  
+  <!-- 第二片叶子 -->
+  <ellipse cx="39" cy="38" rx="8" ry="4" fill="#90EE90" transform="rotate(30 39 38)"/>
+  <path d="M 39 38 L 34 40" stroke="#228B22" stroke-width="1"/>
+  
+  <!-- 顶部嫩芽 -->
+  <ellipse cx="32" cy="32" rx="3" ry="5" fill="#ADFF2F"/>
+  
+  <!-- 叶脉 -->
+  <path d="M 20 40 L 30 40" stroke="#228B22" stroke-width="0.5" opacity="0.7"/>
+  <path d="M 34 38 L 44 38" stroke="#228B22" stroke-width="0.5" opacity="0.7"/>
+</svg>

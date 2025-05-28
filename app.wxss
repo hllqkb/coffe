@@ -1,0 +1,325 @@
+/**app.wxss**/
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+  background-color: #F5F5DC;
+}
+
+/* 通用按钮样式 */
+.btn {
+  background: linear-gradient(135deg, #8B4513, #A0522D);
+  color: white;
+  border-radius: 50rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(139, 69, 19, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(139, 69, 19, 0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #8B4513, #A0522D);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #CD853F, #DEB887);
+  color: #8B4513;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #228B22, #32CD32);
+}
+
+.btn-disabled {
+  background: #CCCCCC;
+  color: #999999;
+  box-shadow: none;
+}
+
+/* 卡片样式 */
+.card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+  border: 2rpx solid #F0E68C;
+}
+
+.card-header {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #8B4513;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.card-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 进度条样式 */
+.progress-container {
+  width: 100%;
+  height: 20rpx;
+  background-color: #F0F0F0;
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin: 20rpx 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #32CD32, #228B22);
+  border-radius: 10rpx;
+  transition: width 0.3s ease;
+}
+
+/* 咖啡树样式 */
+.coffee-tree {
+  width: 300rpx;
+  height: 300rpx;
+  margin: 40rpx auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coffee-tree image {
+  width: 100%;
+  height: 100%;
+  border-radius: 20rpx;
+}
+
+/* 操作按钮组 */
+.action-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin: 30rpx 0;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10rpx;
+  background: white;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  border: 2rpx solid #F0E68C;
+}
+
+.action-btn image {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 10rpx;
+}
+
+.action-btn text {
+  font-size: 24rpx;
+  color: #8B4513;
+}
+
+/* 资源显示 */
+.resources {
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.resource-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resource-item image {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 10rpx;
+}
+
+.resource-item text {
+  font-size: 24rpx;
+  color: #8B4513;
+  font-weight: bold;
+}
+
+/* 列表样式 */
+.list-item {
+  background: white;
+  border-radius: 15rpx;
+  padding: 25rpx;
+  margin: 15rpx 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  border-left: 6rpx solid #8B4513;
+}
+
+.list-item-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #8B4513;
+  margin-bottom: 10rpx;
+}
+
+.list-item-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 标签样式 */
+.tag {
+  display: inline-block;
+  padding: 8rpx 16rpx;
+  background: #F0E68C;
+  color: #8B4513;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  margin: 5rpx;
+}
+
+.tag-primary {
+  background: #8B4513;
+  color: white;
+}
+
+.tag-success {
+  background: #32CD32;
+  color: white;
+}
+
+/* 输入框样式 */
+.input-group {
+  margin: 20rpx;
+}
+
+.input-label {
+  font-size: 28rpx;
+  color: #8B4513;
+  margin-bottom: 10rpx;
+  font-weight: bold;
+}
+
+.input {
+  width: 100%;
+  padding: 20rpx;
+  border: 2rpx solid #F0E68C;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  background: white;
+}
+
+.input:focus {
+  border-color: #8B4513;
+}
+
+/* 模态框样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin: 40rpx;
+  max-width: 600rpx;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.modal-header {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #8B4513;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30rpx;
+}
+
+/* 加载动画 */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+}
+
+.loading-text {
+  margin-left: 20rpx;
+  color: #8B4513;
+  font-size: 28rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: #999;
+}
+
+.empty-state image {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-state text {
+  font-size: 28rpx;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .action-buttons {
+    justify-content: center;
+  }
+  
+  .action-btn {
+    width: 100rpx;
+    height: 100rpx;
+  }
+  
+  .coffee-tree {
+    width: 250rpx;
+    height: 250rpx;
+  }
+}

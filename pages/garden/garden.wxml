@@ -1,0 +1,223 @@
+<!--garden.wxml-->
+<view class="container">
+  <!-- 庄园头部信息 -->
+  <view class="garden-header">
+    <view class="header-bg">
+      <view class="garden-title">我的咖啡庄园</view>
+      <view class="garden-stats">
+        <view class="stat-item">
+          <text class="stat-number">{{myTrees.length}}</text>
+          <text class="stat-label">咖啡树</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">{{harvestedCount}}</text>
+          <text class="stat-label">已收获</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">{{totalDays}}</text>
+          <text class="stat-label">种植天数</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 资源栏 -->
+  <view class="resources-bar">
+    <view class="resource-item">
+      <image src="/images/water.png"></image>
+      <text>{{waterCount}}</text>
+      <button class="resource-btn" bindtap="buyResource" data-type="water">+</button>
+    </view>
+    <view class="resource-item">
+      <image src="/images/fertilizer.png"></image>
+      <text>{{fertilizerCount}}</text>
+      <button class="resource-btn" bindtap="buyResource" data-type="fertilizer">+</button>
+    </view>
+    <view class="resource-item">
+      <image src="/images/coin.png"></image>
+      <text>{{coinCount}}</text>
+      <button class="resource-btn" bindtap="buyResource" data-type="coin">+</button>
+    </view>
+  </view>
+
+  <!-- 咖啡树列表 -->
+  <view class="trees-container">
+    <view class="section-title">我的咖啡树</view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{myTrees.length === 0}}">
+      <image src="/images/empty-garden.png"></image>
+      <text>还没有咖啡树</text>
+      <text>去首页认领一棵吧！</text>
+      <button class="btn btn-primary" bindtap="goToIndex">认领咖啡树</button>
+    </view>
+
+    <!-- 咖啡树卡片 -->
+    <view class="tree-card" wx:for="{{myTrees}}" wx:key="_id">
+      <view class="tree-header">
+        <view class="tree-info">
+          <view class="tree-name">{{item.varietyName}}</view>
+          <view class="tree-stage">{{item.currentStageName}}</view>
+        </view>
+        <view class="tree-actions">
+          <button class="action-btn" bindtap="viewTreeDetail" data-tree="{{item}}">
+            <image src="/images/detail-icon.png"></image>
+          </button>
+        </view>
+      </view>
+
+      <!-- 咖啡树图片和状态 -->
+      <view class="tree-display">
+        <view class="tree-image-container">
+          <!-- 显示用户上传的照片或默认阶段图片 -->
+          <image class="tree-image" src="{{item.hasPhoto ? item.latestPhoto : item.currentStageImage}}" mode="aspectFill"></image>
+          
+          <!-- 照片标识 -->
+          <view class="photo-indicator" wx:if="{{item.hasPhoto}}">
+            <image src="/images/camera-icon.png"></image>
+          </view>
+          
+          <!-- 成长进度 -->
+          <view class="progress-overlay">
+            <view class="progress-container">
+              <view class="progress-bar" style="width: {{item.progress}}%"></view>
+            </view>
+            <text class="progress-text">{{item.progress}}%</text>
+          </view>
+          
+          <!-- 状态标签 -->
+          <view class="status-tags">
+            <view class="tag tag-stage">{{item.currentStageName}}</view>
+            <view class="tag tag-health {{item.healthStatus}}">{{item.healthText}}</view>
+          </view>
+        </view>
+
+        <!-- 树的详细信息 -->
+        <view class="tree-details">
+          <view class="detail-item">
+            <text class="detail-label">种植时间:</text>
+            <text class="detail-value">{{item.plantTimeText}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">上次浇水:</text>
+            <text class="detail-value">{{item.lastWateredText}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">上次施肥:</text>
+            <text class="detail-value">{{item.lastFertilizedText}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">预计成熟:</text>
+            <text class="detail-value">{{item.expectedMatureText}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="tree-operations">
+        <button class="operation-btn water-btn" 
+                catchtap="waterTree" 
+                data-tree="{{item}}"
+                disabled="{{waterCount <= 0 || item.cannotWater}}">
+          <image src="/images/water-icon.png"></image>
+          <text>浇水</text>
+          <text class="btn-cost">(-1)</text>
+        </button>
+        
+        <button class="operation-btn fertilizer-btn" 
+                catchtap="fertilizeTree" 
+                data-tree="{{item}}"
+                disabled="{{fertilizerCount <= 0 || item.cannotFertilize}}">
+          <image src="/images/fertilizer-icon.png"></image>
+          <text>施肥</text>
+          <text class="btn-cost">(-1)</text>
+        </button>
+        
+        <button class="operation-btn harvest-btn" 
+                catchtap="harvestTree" 
+                data-tree="{{item}}"
+                wx:if="{{item.canHarvest}}">
+          <image src="/images/harvest-icon.png"></image>
+          <text>收获</text>
+        </button>
+        
+        <button class="operation-btn photo-btn" 
+                catchtap="takePhoto" 
+                data-tree="{{item}}">
+          <image src="/images/camera-icon.png"></image>
+          <text>拍照</text>
+        </button>
+      </view>
+
+      <!-- 成长日志 -->
+      <view class="growth-log" wx:if="{{item.showLog}}">
+        <view class="log-title">成长日志</view>
+        <view class="log-item" wx:for="{{item.growthLog}}" wx:key="time" wx:for-item="log">
+          <view class="log-time">{{log.timeText}}</view>
+          <view class="log-content">{{log.content}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 庄园装饰 -->
+  <view class="garden-decorations" wx:if="{{myTrees.length > 0}}">
+    <view class="section-title">庄园装饰</view>
+    <scroll-view class="decorations-scroll" scroll-x="true">
+      <view class="decoration-item" wx:for="{{decorations}}" wx:key="id">
+        <image src="{{item.image}}"></image>
+        <text>{{item.name}}</text>
+        <button class="decoration-btn" bindtap="addDecoration" data-decoration="{{item}}">添加</button>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 浮动操作按钮 -->
+  <view class="floating-actions">
+    <button class="floating-btn" bindtap="addNewTree">
+      <image src="/images/add-tree-icon.png"></image>
+    </button>
+  </view>
+</view>
+
+<!-- 操作确认模态框 -->
+<view class="modal" wx:if="{{showActionModal}}">
+  <view class="modal-content">
+    <view class="modal-header">{{actionModal.title}}</view>
+    <view class="modal-body">
+      <text>{{actionModal.content}}</text>
+      <view class="cost-info" wx:if="{{actionModal.cost}}">
+        <text>消耗: {{actionModal.cost}}</text>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn btn-secondary" catchtap="cancelAction">取消</button>
+      <button class="btn btn-primary" catchtap="confirmAction">确认</button>
+    </view>
+  </view>
+</view>
+
+<!-- 收获结果模态框 -->
+<view class="modal" wx:if="{{showHarvestModal}}">
+  <view class="modal-content harvest-modal">
+    <view class="modal-header">🎉 收获成功！</view>
+    <view class="harvest-result">
+      <image src="/images/coffee-beans.png"></image>
+      <view class="harvest-info">
+        <text class="harvest-title">获得 {{harvestResult.varietyName}} 咖啡豆</text>
+        <text class="harvest-amount">数量: {{harvestResult.amount}}g</text>
+        <text class="harvest-quality">品质: {{harvestResult.quality}}</text>
+      </view>
+    </view>
+    <view class="harvest-rewards">
+      <text>额外奖励:</text>
+      <view class="reward-item" wx:for="{{harvestResult.rewards}}" wx:key="type">
+        <image src="{{item.icon}}"></image>
+        <text>{{item.name}} +{{item.amount}}</text>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn btn-primary" bindtap="closeHarvestModal">太棒了！</button>
+    </view>
+  </view>
+</view>

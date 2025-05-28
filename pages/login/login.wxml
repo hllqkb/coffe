@@ -1,0 +1,52 @@
+<!--pages/login/login.wxml-->
+<view class="login-container">
+  <!-- 头部logo区域 -->
+  <view class="header">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <view class="app-name">咖啡小树</view>
+    <view class="app-desc">种植属于你的咖啡树</view>
+  </view>
+
+  <!-- 登录区域 -->
+  <view class="login-section">
+    <view class="login-title">欢迎使用咖啡小树</view>
+    <view class="login-subtitle">请先登录以获得完整体验</view>
+    
+    <!-- 用户信息展示 -->
+    <view class="user-preview" wx:if="{{hasUserInfo}}">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="nickname">{{userInfo.nickName}}</view>
+    </view>
+    
+    <!-- 登录按钮 -->
+    <view class="login-buttons">
+      <button 
+        class="login-btn primary" 
+        wx:if="{{canIUseGetUserProfile}}"
+        bindtap="wxLogin">
+        <image src="/images/wechat-icon.svg" class="wechat-icon"></image>
+        微信登录
+      </button>
+      
+      <button 
+        class="login-btn primary" 
+        wx:else
+        open-type="getUserInfo" 
+        bindgetuserinfo="wxLogin">
+        <image src="/images/wechat-icon.svg" class="wechat-icon"></image>
+        微信登录
+      </button>
+      
+      <button class="login-btn secondary" bindtap="skipLogin">
+        暂不登录，先体验
+      </button>
+    </view>
+  </view>
+
+  <!-- 底部说明 -->
+  <view class="footer">
+    <view class="privacy-text">
+      登录即表示同意《用户协议》和《隐私政策》
+    </view>
+  </view>
+</view>

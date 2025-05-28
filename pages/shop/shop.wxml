@@ -1,0 +1,203 @@
+<!--pages/shop/shop.wxml-->
+<view class="container">
+  <!-- 头部背景 -->
+  <view class="header-bg">
+    <image src="/images/bg/shop-bg.jpg" mode="aspectFill"></image>
+    <view class="header-overlay"></view>
+    <view class="header-content">
+      <text class="header-title">咖啡道具商店</text>
+      <text class="header-desc">购买道具，助力咖啡树成长</text>
+    </view>
+  </view>
+
+  <!-- 用户资源栏 -->
+  <view class="resource-bar">
+    <view class="resource-item">
+      <image src="/images/icons/water.png"></image>
+      <text class="resource-amount">{{userResources.water || 0}}</text>
+      <text class="resource-name">水滴</text>
+    </view>
+    <view class="resource-item">
+      <image src="/images/icons/fertilizer.png"></image>
+      <text class="resource-amount">{{userResources.fertilizer || 0}}</text>
+      <text class="resource-name">肥料</text>
+    </view>
+    <view class="resource-item">
+      <image src="/images/icons/coin.png"></image>
+      <text class="resource-amount">{{userResources.coin || 0}}</text>
+      <text class="resource-name">金币</text>
+    </view>
+  </view>
+
+  <!-- 分类导航 (保留水滴和肥料) -->
+  <view class="category-nav">
+    <scroll-view class="category-scroll" scroll-x>
+      <view class="category-item {{activeCategory === item.id ? 'active' : ''}}" 
+            wx:for="{{categories}}" 
+            wx:key="id"
+            bindtap="onCategoryChange"
+            data-id="{{item.id}}">
+        <image src="{{item.icon}}"></image>
+        <text>{{item.name}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 商品列表 -->
+  <view class="products-section">
+    <view class="section-title" wx:if="{{activeCategory !== 'all'}}">
+      <image src="/images/icons/product.png"></image>
+      <text>{{currentCategoryName}}</text>
+    </view>
+    
+    <view class="products-grid">
+      <view class="product-card" 
+            wx:for="{{filteredProducts}}" 
+            wx:key="id"
+            bindtap="onItemTap"
+            data-item="{{item}}">
+        
+        <!-- 商品图片 -->
+        <view class="product-image-container">
+          <image src="{{item.image}}" class="product-image" mode="aspectFill"></image>
+          <view class="product-badge" wx:if="{{item.badge}}">{{item.badge}}</view>
+          <view class="discount-badge" wx:if="{{item.discount}}">{{item.discount}}折</view>
+        </view>
+        
+        <!-- 商品信息 -->
+        <view class="product-info">
+          <text class="product-name">{{item.name}}</text>
+          <text class="product-desc">{{item.description}}</text>
+          
+          <!-- 价格信息 -->
+          <view class="price-container">
+            <view class="current-price">
+              <image src="{{item.priceIcon}}"></image>
+              <text class="price-amount">{{item.price}}</text>
+            </view>
+            <view class="original-price" wx:if="{{item.originalPrice}}">
+              <image src="{{item.priceIcon}}"></image>
+              <text class="original-amount">{{item.originalPrice}}</text>
+            </view>
+          </view>
+          
+          <!-- 商品标签 -->
+          <view class="product-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+            <text class="product-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+          </view>
+        </view>
+        
+        <!-- 购买按钮 -->
+        <button class="buy-btn" 
+                bindtap="onBuyTap" 
+                data-item="{{item}}"
+                catchtap="">
+          <text>购买</text>
+        </button>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-products" wx:if="{{filteredProducts.length === 0 && !loading}}">
+      <image src="/images/empty/no-products.png"></image>
+      <text>暂无商品</text>
+    </view>
+  </view>
+
+
+
+  <!-- 购买确认模态框 -->
+  <view class="modal-overlay {{showBuyModal ? 'show' : ''}}" bindtap="closeBuyModal">
+    <view class="modal-content buy-modal" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">确认购买</text>
+        <button class="close-btn" bindtap="closeBuyModal">
+          <image src="/images/icons/close.png"></image>
+        </button>
+      </view>
+      
+      <view class="buy-item-info" wx:if="{{selectedItem}}">
+        <image src="{{selectedItem.image}}" class="buy-item-image"></image>
+        <view class="buy-item-details">
+          <text class="buy-item-name">{{selectedItem.name}}</text>
+          <text class="buy-item-desc">{{selectedItem.description}}</text>
+          <view class="buy-item-price">
+            <image src="{{selectedItem.priceIcon}}"></image>
+            <text>{{selectedItem.price}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="quantity-selector">
+        <text class="quantity-label">购买数量：</text>
+        <view class="quantity-controls">
+          <button class="quantity-btn" bindtap="decreaseQuantity" disabled="{{buyQuantity <= 1}}">
+            <text>-</text>
+          </button>
+          <text class="quantity-value">{{buyQuantity}}</text>
+          <button class="quantity-btn" bindtap="increaseQuantity">
+            <text>+</text>
+          </button>
+        </view>
+      </view>
+      
+      <view class="total-price">
+        <text class="total-label">总价：</text>
+        <view class="total-amount">
+          <image src="{{selectedItem.priceIcon}}"></image>
+          <text>{{totalPrice}}</text>
+        </view>
+      </view>
+      
+      <view class="resource-check">
+        <text class="check-label">当前余额：</text>
+        <view class="current-balance">
+          <image src="{{selectedItem.priceIcon}}"></image>
+          <text class="{{canAfford ? 'sufficient' : 'insufficient'}}">{{currentBalance}}</text>
+        </view>
+      </view>
+      
+      <view class="modal-actions">
+        <button class="cancel-btn" bindtap="closeBuyModal">
+          <text>取消</text>
+        </button>
+        <button class="confirm-btn {{canAfford ? '' : 'disabled'}}" 
+                bindtap="confirmPurchase" 
+                disabled="{{!canAfford || purchasing}}">
+          <text>{{purchasing ? '购买中...' : '确认购买'}}</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 购买成功模态框 -->
+  <view class="modal-overlay {{showSuccessModal ? 'show' : ''}}" bindtap="closeSuccessModal">
+    <view class="modal-content success-modal" catchtap="">
+      <view class="success-header">
+        <image src="/images/icons/success.png" class="success-icon"></image>
+        <text class="success-title">购买成功！</text>
+      </view>
+      
+      <view class="success-content">
+        <text class="success-message">{{successMessage}}</text>
+        <view class="success-items" wx:if="{{purchasedItems && purchasedItems.length > 0}}">
+          <view class="success-item" wx:for="{{purchasedItems}}" wx:key="type">
+            <image src="{{item.icon}}"></image>
+            <text class="item-name">{{item.name}}</text>
+            <text class="item-amount">+{{item.amount}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <button class="success-btn" bindtap="closeSuccessModal">
+        <text>太棒了</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <image src="/images/loading.gif"></image>
+    <text>加载中...</text>
+  </view>
+</view>

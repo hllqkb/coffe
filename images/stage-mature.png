@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- 土壤 -->
+  <rect x="0" y="50" width="64" height="14" fill="#8B4513"/>
+  <rect x="0" y="53" width="64" height="11" fill="#654321"/>
+  
+  <!-- 主茎 -->
+  <rect x="30" y="8" width="4" height="45" fill="#8B4513"/>
+  
+  <!-- 主要分支 -->
+  <rect x="15" y="15" width="17" height="3" fill="#8B4513" transform="rotate(-25 23.5 16.5)"/>
+  <rect x="32" y="15" width="17" height="3" fill="#8B4513" transform="rotate(25 40.5 16.5)"/>
+  
+  <rect x="12" y="25" width="20" height="3" fill="#8B4513" transform="rotate(-20 22 26.5)"/>
+  <rect x="32" y="25" width="20" height="3" fill="#8B4513" transform="rotate(20 42 26.5)"/>
+  
+  <rect x="15" y="35" width="17" height="3" fill="#8B4513" transform="rotate(-15 23.5 36.5)"/>
+  <rect x="32" y="35" width="17" height="3" fill="#8B4513" transform="rotate(15 40.5 36.5)"/>
+  
+  <!-- 次级分支 -->
+  <rect x="8" y="20" width="10" height="2" fill="#228B22" transform="rotate(-30 13 21)"/>
+  <rect x="6" y="30" width="12" height="2" fill="#228B22" transform="rotate(-25 12 31)"/>
+  <rect x="46" y="20" width="10" height="2" fill="#228B22" transform="rotate(30 51 21)"/>
+  <rect x="46" y="30" width="12" height="2" fill="#228B22" transform="rotate(25 52 31)"/>
+  
+  <!-- 茂密的叶子 -->
+  <ellipse cx="8" cy="18" rx="5" ry="3" fill="#228B22" transform="rotate(-30 8 18)"/>
+  <ellipse cx="5" cy="23" rx="6" ry="3" fill="#32CD32" transform="rotate(-25 5 23)"/>
+  <ellipse cx="3" cy="28" rx="7" ry="4" fill="#228B22" transform="rotate(-20 3 28)"/>
+  <ellipse cx="6" cy="33" rx="6" ry="3" fill="#32CD32" transform="rotate(-15 6 33)"/>
+  <ellipse cx="8" cy="38" rx="5" ry="3" fill="#228B22" transform="rotate(-10 8 38)"/>
+  
+  <ellipse cx="56" cy="16" rx="5" ry="3" fill="#228B22" transform="rotate(30 56 16)"/>
+  <ellipse cx="59" cy="21" rx="6" ry="3" fill="#32CD32" transform="rotate(25 59 21)"/>
+  <ellipse cx="61" cy="26" rx="7" ry="4" fill="#228B22" transform="rotate(20 61 26)"/>
+  <ellipse cx="58" cy="31" rx="6" ry="3" fill="#32CD32" transform="rotate(15 58 31)"/>
+  <ellipse cx="56" cy="36" rx="5" ry="3" fill="#228B22" transform="rotate(10 56 36)"/>
+  
+  <!-- 成熟的咖啡果实 (深红色) -->
+  <!-- 左侧果实群 -->
+  <ellipse cx="15" cy="12" rx="2.5" ry="3.5" fill="#8B0000"/>
+  <ellipse cx="18" cy="10" rx="2" ry="3" fill="#DC143C"/>
+  <ellipse cx="12" cy="15" rx="2.2" ry="3.2" fill="#8B0000"/>
+  <ellipse cx="20" cy="14" rx="1.8" ry="2.8" fill="#B22222"/>
+  
+  <ellipse cx="10" cy="22" rx="2.8" ry="3.8" fill="#8B0000"/>
+  <ellipse cx="14" cy="20" rx="2.3" ry="3.3" fill="#DC143C"/>
+  <ellipse cx="7" cy="25" rx="2" ry="3" fill="#8B0000"/>
+  <ellipse cx="16" cy="24" rx="2.1" ry="3.1" fill="#B22222"/>
+  
+  <ellipse cx="12" cy="32" rx="2.5" ry="3.5" fill="#8B0000"/>
+  <ellipse cx="9" cy="35" rx="2.2" ry="3.2" fill="#DC143C"/>
+  <ellipse cx="15" cy="36" rx="2" ry="3" fill="#8B0000"/>
+  
+  <!-- 右侧果实群 -->
+  <ellipse cx="49" cy="10" rx="2.5" ry="3.5" fill="#8B0000"/>
+  <ellipse cx="46" cy="12" rx="2" ry="3" fill="#DC143C"/>
+  <ellipse cx="52" cy="13" rx="2.2" ry="3.2" fill="#8B0000"/>
+  <ellipse cx="44" cy="16" rx="1.8" ry="2.8" fill="#B22222"/>
+  
+  <ellipse cx="54" cy="20" rx="2.8" ry="3.8" fill="#8B0000"/>
+  <ellipse cx="50" cy="22" rx="2.3" ry="3.3" fill="#DC143C"/>
+  <ellipse cx="57" cy="23" rx="2" ry="3" fill="#8B0000"/>
+  <ellipse cx="48" cy="26" rx="2.1" ry="3.1" fill="#B22222"/>
+  
+  <ellipse cx="52" cy="30" rx="2.5" ry="3.5" fill="#8B0000"/>
+  <ellipse cx="55" cy="33" rx="2.2" ry="3.2" fill="#DC143C"/>
+  <ellipse cx="49" cy="34" rx="2" ry="3" fill="#8B0000"/>
+  
+  <!-- 顶部果实 -->
+  <ellipse cx="32" cy="5" rx="2" ry="3" fill="#8B0000"/>
+  <ellipse cx="29" cy="7" rx="1.8" ry="2.8" fill="#DC143C"/>
+  <ellipse cx="35" cy="6" rx="1.9" ry="2.9" fill="#8B0000"/>
+  
+  <!-- 果实高光效果 -->
+  <ellipse cx="16" cy="11" rx="0.6" ry="1" fill="#FF4500" opacity="0.6"/>
+  <ellipse cx="11" cy="21" rx="0.7" ry="1.1" fill="#FF4500" opacity="0.6"/>
+  <ellipse cx="50" cy="9" rx="0.6" ry="1" fill="#FF4500" opacity="0.6"/>
+  <ellipse cx="55" cy="19" rx="0.7" ry="1.1" fill="#FF4500" opacity="0.6"/>
+</svg>

@@ -1,0 +1,398 @@
+/**index.wxss**/
+.container {
+  background: linear-gradient(180deg, #F5F5DC 0%, #FFF8DC 100%);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* 头部区域 */
+.header {
+  text-align: center;
+  padding: 60rpx 40rpx 40rpx;
+  background: linear-gradient(135deg, #8B4513, #A0522D);
+  color: white;
+  border-radius: 0 0 50rpx 50rpx;
+  margin-bottom: 30rpx;
+}
+
+.welcome-text {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.subtitle {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+/* 用户信息卡片 */
+.user-card {
+  margin: 20rpx;
+  background: white;
+  border-radius: 25rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 25rpx rgba(139, 69, 19, 0.15);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  margin-right: 20rpx;
+  border: 3rpx solid #F0E68C;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.nickname {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #8B4513;
+  margin-bottom: 5rpx;
+}
+
+.level {
+  font-size: 24rpx;
+  color: #A0522D;
+  background: #F0E68C;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  display: inline-block;
+}
+
+/* 快速操作区域 */
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20rpx;
+  margin: 20rpx 0;
+}
+
+.action-btn {
+  width: 140rpx;
+  height: 140rpx;
+  background: white;
+  border-radius: 25rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10rpx;
+  box-shadow: 0 6rpx 20rpx rgba(139, 69, 19, 0.1);
+  border: 2rpx solid #F0E68C;
+  transition: all 0.3s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 3rpx 15rpx rgba(139, 69, 19, 0.2);
+}
+
+.action-btn image {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 12rpx;
+}
+
+.action-btn text {
+  font-size: 24rpx;
+  color: #8B4513;
+  font-weight: 500;
+}
+
+/* 咖啡品种选择 */
+.coffee-varieties {
+  margin: 20rpx;
+}
+
+.varieties-scroll {
+  white-space: nowrap;
+  padding: 20rpx 0;
+}
+
+.variety-item {
+  display: inline-block;
+  width: 200rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-right: 20rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.1);
+  border: 2rpx solid #F0E68C;
+  transition: all 0.3s ease;
+  vertical-align: top;
+}
+
+.variety-item:active {
+  transform: translateY(-5rpx);
+  box-shadow: 0 8rpx 25rpx rgba(139, 69, 19, 0.2);
+}
+
+.variety-item image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 15rpx;
+  margin-bottom: 15rpx;
+}
+
+.variety-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #8B4513;
+  margin-bottom: 8rpx;
+}
+
+.variety-desc {
+  font-size: 22rpx;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 10rpx;
+}
+
+.growth-time {
+  font-size: 20rpx;
+  color: #A0522D;
+  background: #F0E68C;
+  padding: 4rpx 8rpx;
+  border-radius: 10rpx;
+}
+
+/* 我的咖啡树 */
+.my-trees {
+  margin: 20rpx;
+}
+
+.trees-scroll {
+  white-space: nowrap;
+  padding: 20rpx 0;
+}
+
+.tree-item {
+  display: inline-block;
+  width: 160rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-right: 15rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.1);
+  border: 2rpx solid #32CD32;
+  vertical-align: top;
+}
+
+.tree-item image {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 15rpx;
+  margin-bottom: 10rpx;
+}
+
+.tree-name {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #8B4513;
+  margin-bottom: 5rpx;
+}
+
+.tree-stage {
+  font-size: 20rpx;
+  color: #32CD32;
+  margin-bottom: 10rpx;
+}
+
+/* 今日任务 */
+.daily-tasks {
+  margin: 20rpx;
+}
+
+.task-list {
+  margin-top: 20rpx;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-info {
+  flex: 1;
+}
+
+.task-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.task-reward {
+  font-size: 24rpx;
+  color: #A0522D;
+}
+
+.task-status {
+  margin-left: 20rpx;
+}
+
+/* 咖啡知识推荐 */
+.knowledge-recommend {
+  margin: 20rpx;
+}
+
+.knowledge-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.knowledge-item:last-child {
+  border-bottom: none;
+}
+
+.knowledge-item image {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 15rpx;
+  margin-right: 20rpx;
+}
+
+.knowledge-content {
+  flex: 1;
+}
+
+.knowledge-title {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.knowledge-summary {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 底部操作按钮 */
+.bottom-actions {
+  padding: 30rpx 20rpx 50rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.bottom-actions .btn {
+  width: 100%;
+  padding: 25rpx;
+  font-size: 30rpx;
+  border-radius: 25rpx;
+}
+
+/* 模态框样式 */
+.variety-detail {
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.variety-detail image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.variety-info .variety-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #8B4513;
+  margin-bottom: 15rpx;
+}
+
+.variety-info .variety-description {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 15rpx;
+}
+
+.growth-info {
+  background: #F0E68C;
+  padding: 15rpx;
+  border-radius: 15rpx;
+  color: #8B4513;
+  font-size: 24rpx;
+}
+
+/* 响应式适配 */
+@media (max-width: 750rpx) {
+  .quick-actions {
+    justify-content: space-between;
+    padding: 20rpx 30rpx;
+  }
+  
+  .action-btn {
+    width: 120rpx;
+    height: 120rpx;
+    margin: 8rpx;
+  }
+  
+  .action-btn image {
+    width: 50rpx;
+    height: 50rpx;
+  }
+  
+  .action-btn text {
+    font-size: 22rpx;
+  }
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60rpx;
+}
+
+.loading-text {
+  margin-left: 20rpx;
+  color: #8B4513;
+  font-size: 28rpx;
+}
+
+/* 空状态 */
+.empty-trees {
+  text-align: center;
+  padding: 60rpx 40rpx;
+  color: #999;
+}
+
+.empty-trees image {
+  width: 150rpx;
+  height: 150rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.5;
+}
+
+.empty-trees text {
+  font-size: 26rpx;
+  display: block;
+}

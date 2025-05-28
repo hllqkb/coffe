@@ -1,0 +1,136 @@
+<!--pages/comments/comments.wxml-->
+<view class="comments-container">
+  <!-- 帖子信息 -->
+  <view class="post-info" wx:if="{{postInfo}}">
+    <view class="post-header">
+      <image class="user-avatar" src="{{postInfo.user.avatar}}" mode="aspectFill"></image>
+      <view class="user-info">
+        <text class="username">{{postInfo.user.nickname}}</text>
+        <text class="post-time">{{postInfo.createTime}}</text>
+      </view>
+    </view>
+    
+    <view class="post-content">
+      <text>{{postInfo.content}}</text>
+    </view>
+    
+    <view class="post-images" wx:if="{{postInfo.images && postInfo.images.length > 0}}">
+      <image 
+        wx:for="{{postInfo.images}}" 
+        wx:key="index"
+        class="post-image" 
+        src="{{item}}" 
+        mode="aspectFill"
+        bindtap="previewImage"
+        data-current="{{item}}"
+        data-urls="{{postInfo.images}}"
+      ></image>
+    </view>
+    
+    <!-- 帖子互动区域 -->
+    <view class="post-actions">
+      <view class="action-item" catchtap="togglePostLike">
+        <image 
+          class="action-icon {{postInfo.liked ? 'liked' : ''}}" 
+          src="/images/icons/{{postInfo.liked ? 'like-filled' : 'like'}}.png"
+        ></image>
+        <text class="action-text {{postInfo.liked ? 'liked' : ''}}">{{postInfo.likeCount}}</text>
+      </view>
+      
+      <view class="action-item">
+        <image class="action-icon" src="/images/icons/comment.png"></image>
+        <text class="action-text">{{postInfo.commentCount}}</text>
+      </view>
+      
+      <view class="action-item" catchtap="sharePost">
+        <image class="action-icon" src="/images/icons/share.png"></image>
+        <text class="action-text">分享</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 评论列表 -->
+  <view class="comments-section">
+    <view class="section-title">
+      <text>全部评论</text>
+    </view>
+    
+    <view class="comments-list">
+      <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+        <view class="comment-header">
+          <image class="comment-avatar" src="{{item.user.avatar}}" mode="aspectFill"></image>
+          <view class="comment-user-info">
+            <text class="comment-username">{{item.user.nickname}}</text>
+            <text class="comment-time">{{item.createTime}}</text>
+          </view>
+        </view>
+        
+        <view class="comment-content">
+          <text wx:if="{{item.replyTo}}" class="reply-to">回复 @{{item.replyTo}}: </text>
+          <text>{{item.content}}</text>
+        </view>
+        
+        <view class="comment-actions">
+          <view class="action-item" catchtap="toggleCommentLike" data-id="{{item.id}}">
+            <image class="action-icon {{item.liked ? 'liked' : ''}}" src="{{item.liked ? '/images/icons/like-filled.png' : '/images/icons/like.png'}}"></image>
+            <text class="action-text {{item.liked ? 'liked' : ''}}">{{item.likeCount}}</text>
+          </view>
+          <view class="action-item" catchtap="replyComment" data-id="{{item.id}}">
+            <image class="action-icon" src="/images/icons/comment.png"></image>
+            <text class="action-text">回复</text>
+          </view>
+        </view>
+        
+        <!-- 回复列表 -->
+        <view class="replies-list" wx:if="{{item.replies && item.replies.length > 0}}">
+          <view class="reply-item" wx:for="{{item.replies}}" wx:for-item="reply" wx:key="id">
+            <view class="reply-header">
+              <image class="reply-avatar" src="{{reply.user.avatar}}" mode="aspectFill"></image>
+              <view class="reply-user-info">
+                <text class="reply-username">{{reply.user.nickname}}</text>
+                <text class="reply-time">{{reply.createTime}}</text>
+              </view>
+            </view>
+            <view class="reply-content">
+              <text wx:if="{{reply.replyTo}}" class="reply-to">回复 @{{reply.replyTo}}: </text>
+              <text>{{reply.content}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 加载状态 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-container" wx:if="{{!loading && comments.length === 0}}">
+      <text class="empty-text">暂无评论，快来抢沙发吧~</text>
+    </view>
+  </view>
+</view>
+
+<!-- 评论输入框 -->
+<view class="comment-input-container">
+  <!-- 回复提示 -->
+  <view class="reply-tip" wx:if="{{replyToComment}}">
+    <text>回复 @{{replyToComment.user.nickname}}</text>
+    <text class="cancel-reply" catchtap="cancelReply">取消</text>
+  </view>
+  
+  <view class="input-wrapper">
+    <input 
+      class="comment-input" 
+      placeholder="{{replyToComment ? '回复评论...' : '写评论...'}}" 
+      value="{{commentContent}}"
+      catchinput="onCommentInput"
+      confirm-type="send"
+      catchconfirm="publishComment"
+    />
+    <button class="send-btn" catchtap="publishComment" disabled="{{!commentContent || commentContent.length === 0}}">
+      发送
+    </button>
+  </view>
+</view>

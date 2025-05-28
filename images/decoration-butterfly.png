@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- 蝴蝶身体 -->
+  <ellipse cx="32" cy="32" rx="2" ry="18" fill="#8B4513"/>
+  <ellipse cx="32" cy="25" rx="1.5" ry="3" fill="#654321"/>
+  <ellipse cx="32" cy="32" rx="1.5" ry="3" fill="#654321"/>
+  <ellipse cx="32" cy="39" rx="1.5" ry="3" fill="#654321"/>
+  
+  <!-- 蝴蝶头部 -->
+  <circle cx="32" cy="18" r="3" fill="#8B4513"/>
+  
+  <!-- 触角 -->
+  <path d="M30 16 Q28 12 26 10" stroke="#654321" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M34 16 Q36 12 38 10" stroke="#654321" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <circle cx="26" cy="10" r="1" fill="#8B4513"/>
+  <circle cx="38" cy="10" r="1" fill="#8B4513"/>
+  
+  <!-- 左上翅膀 -->
+  <ellipse cx="22" cy="25" rx="8" ry="12" fill="#FF6347" transform="rotate(-20 22 25)"/>
+  <ellipse cx="20" cy="23" rx="6" ry="9" fill="#FF4500" transform="rotate(-20 20 23)"/>
+  <!-- 翅膀斑点 -->
+  <circle cx="18" cy="20" r="2" fill="#FFD700"/>
+  <circle cx="22" cy="28" r="1.5" fill="#FFFFFF"/>
+  <circle cx="16" cy="26" r="1" fill="#000000"/>
+  
+  <!-- 右上翅膀 -->
+  <ellipse cx="42" cy="25" rx="8" ry="12" fill="#FF6347" transform="rotate(20 42 25)"/>
+  <ellipse cx="44" cy="23" rx="6" ry="9" fill="#FF4500" transform="rotate(20 44 23)"/>
+  <!-- 翅膀斑点 -->
+  <circle cx="46" cy="20" r="2" fill="#FFD700"/>
+  <circle cx="42" cy="28" r="1.5" fill="#FFFFFF"/>
+  <circle cx="48" cy="26" r="1" fill="#000000"/>
+  
+  <!-- 左下翅膀 -->
+  <ellipse cx="24" cy="40" rx="6" ry="10" fill="#9370DB" transform="rotate(-10 24 40)"/>
+  <ellipse cx="22" cy="38" rx="4" ry="7" fill="#8A2BE2" transform="rotate(-10 22 38)"/>
+  <!-- 翅膀斑点 -->
+  <circle cx="20" cy="35" r="1.5" fill="#FFD700"/>
+  <circle cx="24" cy="42" r="1" fill="#FFFFFF"/>
+  
+  <!-- 右下翅膀 -->
+  <ellipse cx="40" cy="40" rx="6" ry="10" fill="#9370DB" transform="rotate(10 40 40)"/>
+  <ellipse cx="42" cy="38" rx="4" ry="7" fill="#8A2BE2" transform="rotate(10 42 38)"/>
+  <!-- 翅膀斑点 -->
+  <circle cx="44" cy="35" r="1.5" fill="#FFD700"/>
+  <circle cx="40" cy="42" r="1" fill="#FFFFFF"/>
+  
+  <!-- 翅膀边缘装饰 -->
+  <path d="M14 18 Q12 16 14 14 Q16 16 14 18" fill="#FF1493"/>
+  <path d="M50 18 Q52 16 50 14 Q48 16 50 18" fill="#FF1493"/>
+  <path d="M18 48 Q16 50 18 52 Q20 50 18 48" fill="#4169E1"/>
+  <path d="M46 48 Q48 50 46 52 Q44 50 46 48" fill="#4169E1"/>
+  
+  <!-- 眼睛 -->
+  <circle cx="30" cy="17" r="1" fill="#000000"/>
+  <circle cx="34" cy="17" r="1" fill="#000000"/>
+  <circle cx="30" cy="17" r="0.3" fill="#FFFFFF"/>
+  <circle cx="34" cy="17" r="0.3" fill="#FFFFFF"/>
+</svg>

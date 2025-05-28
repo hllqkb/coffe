@@ -1,0 +1,274 @@
+<!--pages/profile/profile.wxml-->
+<view class="profile-container">
+  <!-- 头部背景 -->
+  <view class="header-bg">
+    <image class="bg-image" src="/images/bg/profile-bg.jpg" mode="aspectFill"></image>
+    <view class="bg-overlay"></view>
+  </view>
+
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-avatar">
+      <image class="avatar-image" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="level-badge">Lv.{{userInfo.level || 1}}</view>
+    </view>
+    
+    <view class="user-info">
+      <view class="user-name">{{userInfo.nickName || '咖啡爱好者'}}</view>
+      <view class="user-title">{{userInfo.title || '新手庄园主'}}</view>
+      <view class="join-time">加入时间：{{joinTimeText}}</view>
+    </view>
+    
+    <view class="edit-btn" bindtap="editProfile">
+      <image class="edit-icon" src="/images/icons/edit.png"></image>
+    </view>
+  </view>
+
+  <!-- 统计数据 -->
+  <view class="stats-section">
+    <view class="stats-title">我的数据</view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-number">{{stats.totalTrees}}</view>
+        <view class="stat-label">咖啡树</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{stats.harvestedTrees}}</view>
+        <view class="stat-label">已收获</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{stats.totalDays}}</view>
+        <view class="stat-label">种植天数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{stats.checkinDays}}</view>
+        <view class="stat-label">签到天数</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 资源展示 -->
+  <view class="resources-section">
+    <view class="section-title">我的资源</view>
+    <view class="resources-grid">
+      <view class="resource-item">
+        <image class="resource-icon" src="/images/icons/water.png"></image>
+        <view class="resource-info">
+          <view class="resource-name">水滴</view>
+          <view class="resource-amount">{{userResources.water}}</view>
+        </view>
+      </view>
+      <view class="resource-item">
+        <image class="resource-icon" src="/images/icons/fertilizer.png"></image>
+        <view class="resource-info">
+          <view class="resource-name">肥料</view>
+          <view class="resource-amount">{{userResources.fertilizer}}</view>
+        </view>
+      </view>
+      <view class="resource-item">
+        <image class="resource-icon" src="/images/icons/coin.png"></image>
+        <view class="resource-info">
+          <view class="resource-name">金币</view>
+          <view class="resource-amount">{{userResources.coin}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成就展示 -->
+  <view class="achievements-section">
+    <view class="section-header">
+      <view class="section-title">我的成就</view>
+      <view class="view-all" bindtap="viewAllAchievements">查看全部</view>
+    </view>
+    <scroll-view class="achievements-scroll" scroll-x="true">
+      <view class="achievement-item" wx:for="{{achievements}}" wx:key="id" data-achievement="{{item}}" bindtap="viewAchievement">
+        <view class="achievement-icon {{item.unlocked ? 'unlocked' : 'locked'}}">
+          <image src="{{item.icon}}" mode="aspectFit"></image>
+          <view class="lock-overlay" wx:if="{{!item.unlocked}}"></view>
+        </view>
+        <view class="achievement-name">{{item.name}}</view>
+        <view class="achievement-progress" wx:if="{{!item.unlocked}}">{{item.progress}}/{{item.target}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-group">
+      <view class="menu-item" bindtap="navigateToOrders">
+        <view class="menu-icon">
+          <image src="/images/icons/order.png"></image>
+        </view>
+        <view class="menu-text">我的订单</view>
+        <view class="menu-arrow">
+          <image src="/images/icons/arrow-right.png"></image>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="navigateToAddress">
+        <view class="menu-icon">
+          <image src="/images/icons/address.png"></image>
+        </view>
+        <view class="menu-text">收货地址</view>
+        <view class="menu-arrow">
+          <image src="/images/icons/arrow-right.png"></image>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="navigateToInvite">
+        <view class="menu-icon">
+          <image src="/images/icons/invite.png"></image>
+        </view>
+        <view class="menu-text">邀请好友</view>
+        <view class="menu-badge" wx:if="{{inviteReward > 0}}">{{inviteReward}}</view>
+        <view class="menu-arrow">
+          <image src="/images/icons/arrow-right.png"></image>
+        </view>
+      </view>
+    </view>
+    
+    <view class="menu-group">
+      <view class="menu-item" bindtap="navigateToFeedback">
+        <view class="menu-icon">
+          <image src="/images/icons/feedback.png"></image>
+        </view>
+        <view class="menu-text">意见反馈</view>
+        <view class="menu-arrow">
+          <image src="/images/icons/arrow-right.png"></image>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="navigateToHelp">
+        <view class="menu-icon">
+          <image src="/images/icons/help.png"></image>
+        </view>
+        <view class="menu-text">帮助中心</view>
+        <view class="menu-arrow">
+          <image src="/images/icons/arrow-right.png"></image>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="navigateToAbout">
+        <view class="menu-icon">
+          <image src="/images/icons/about.png"></image>
+        </view>
+        <view class="menu-text">关于我们</view>
+        <view class="menu-arrow">
+          <image src="/images/icons/arrow-right.png"></image>
+        </view>
+      </view>
+    </view>
+    
+    <view class="menu-group">
+      <view class="menu-item" bindtap="navigateToSettings">
+        <view class="menu-icon">
+          <image src="/images/icons/settings.png"></image>
+        </view>
+        <view class="menu-text">设置</view>
+        <view class="menu-arrow">
+          <image src="/images/icons/arrow-right.png"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text>版本 {{version}}</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-overlay" wx:if="{{loading}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <view class="loading-text">加载中...</view>
+    </view>
+  </view>
+</view>
+
+<!-- 编辑资料模态框 -->
+<view class="modal-overlay" wx:if="{{showEditModal}}" bindtap="closeEditModal">
+  <view class="edit-modal" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">编辑资料</view>
+      <view class="modal-close" bindtap="closeEditModal">
+        <image src="/images/icons/close.png"></image>
+      </view>
+    </view>
+    
+    <view class="modal-content">
+      <view class="form-item">
+        <view class="form-label">头像</view>
+        <view class="avatar-upload" bindtap="chooseAvatar">
+          <image class="upload-avatar" src="{{editForm.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <view class="upload-overlay">
+            <image src="/images/icons/camera.png"></image>
+          </view>
+        </view>
+      </view>
+      
+      <view class="form-item">
+        <view class="form-label">昵称</view>
+        <input class="form-input" placeholder="请输入昵称" value="{{editForm.nickName}}" bindinput="onNickNameInput" maxlength="20"></input>
+      </view>
+      
+      <view class="form-item">
+        <view class="form-label">个性签名</view>
+        <textarea class="form-textarea" placeholder="分享你的咖啡心得..." value="{{editForm.signature}}" bindinput="onSignatureInput" maxlength="100"></textarea>
+      </view>
+    </view>
+    
+    <view class="modal-footer">
+      <button class="cancel-btn" bindtap="closeEditModal">取消</button>
+      <button class="confirm-btn" bindtap="saveProfile" loading="{{saving}}">保存</button>
+    </view>
+  </view>
+</view>
+
+<!-- 成就详情模态框 -->
+<view class="modal-overlay" wx:if="{{showAchievementModal}}" bindtap="closeAchievementModal">
+  <view class="achievement-modal" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">成就详情</view>
+      <view class="modal-close" bindtap="closeAchievementModal">
+        <image src="/images/icons/close.png"></image>
+      </view>
+    </view>
+    
+    <view class="modal-content" wx:if="{{selectedAchievement}}">
+      <view class="achievement-detail">
+        <view class="achievement-large-icon {{selectedAchievement.unlocked ? 'unlocked' : 'locked'}}">
+          <image src="{{selectedAchievement.icon}}" mode="aspectFit"></image>
+          <view class="lock-overlay" wx:if="{{!selectedAchievement.unlocked}}"></view>
+        </view>
+        
+        <view class="achievement-info">
+          <view class="achievement-title">{{selectedAchievement.name}}</view>
+          <view class="achievement-desc">{{selectedAchievement.description}}</view>
+          
+          <view class="achievement-progress-bar" wx:if="{{!selectedAchievement.unlocked}}">
+            <view class="progress-bg">
+              <view class="progress-fill" style="width: {{selectedAchievement.progress / selectedAchievement.target * 100}}%"></view>
+            </view>
+            <view class="progress-text">{{selectedAchievement.progress}}/{{selectedAchievement.target}}</view>
+          </view>
+          
+          <view class="achievement-reward" wx:if="{{selectedAchievement.reward}}">
+            <view class="reward-title">奖励</view>
+            <view class="reward-items">
+              <view class="reward-item" wx:for="{{selectedAchievement.reward}}" wx:key="type">
+                <image class="reward-icon" src="{{item.icon}}"></image>
+                <text class="reward-amount">{{item.amount}}</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="unlock-time" wx:if="{{selectedAchievement.unlocked && selectedAchievement.unlockTime}}">
+            解锁时间：{{selectedAchievement.unlockTimeText}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

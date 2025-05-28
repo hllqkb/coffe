@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- 花朵1 -->
+  <g transform="translate(20,15)">
+    <!-- 花瓣 -->
+    <ellipse cx="0" cy="-8" rx="3" ry="6" fill="#FF69B4" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-8" rx="3" ry="6" fill="#FF1493" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-8" rx="3" ry="6" fill="#FF69B4" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-8" rx="3" ry="6" fill="#FF1493" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-8" rx="3" ry="6" fill="#FF69B4" transform="rotate(288)"/>
+    <!-- 花心 -->
+    <circle cx="0" cy="0" r="3" fill="#FFD700"/>
+    <circle cx="0" cy="0" r="1.5" fill="#FFA500"/>
+  </g>
+  
+  <!-- 花朵2 -->
+  <g transform="translate(45,25)">
+    <!-- 花瓣 -->
+    <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#FF6347" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#DC143C" transform="rotate(60)"/>
+    <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#FF6347" transform="rotate(120)"/>
+    <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#DC143C" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#FF6347" transform="rotate(240)"/>
+    <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#DC143C" transform="rotate(300)"/>
+    <!-- 花心 -->
+    <circle cx="0" cy="0" r="2.5" fill="#FFD700"/>
+    <circle cx="0" cy="0" r="1" fill="#FFA500"/>
+  </g>
+  
+  <!-- 花朵3 -->
+  <g transform="translate(15,45)">
+    <!-- 花瓣 -->
+    <ellipse cx="0" cy="-7" rx="2.8" ry="5.5" fill="#9370DB" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-7" rx="2.8" ry="5.5" fill="#8A2BE2" transform="rotate(45)"/>
+    <ellipse cx="0" cy="-7" rx="2.8" ry="5.5" fill="#9370DB" transform="rotate(90)"/>
+    <ellipse cx="0" cy="-7" rx="2.8" ry="5.5" fill="#8A2BE2" transform="rotate(135)"/>
+    <ellipse cx="0" cy="-7" rx="2.8" ry="5.5" fill="#9370DB" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-7" rx="2.8" ry="5.5" fill="#8A2BE2" transform="rotate(225)"/>
+    <ellipse cx="0" cy="-7" rx="2.8" ry="5.5" fill="#9370DB" transform="rotate(270)"/>
+    <ellipse cx="0" cy="-7" rx="2.8" ry="5.5" fill="#8A2BE2" transform="rotate(315)"/>
+    <!-- 花心 -->
+    <circle cx="0" cy="0" r="2.8" fill="#FFD700"/>
+    <circle cx="0" cy="0" r="1.2" fill="#FFA500"/>
+  </g>
+  
+  <!-- 小花朵装饰 -->
+  <g transform="translate(50,50)">
+    <ellipse cx="0" cy="-4" rx="2" ry="3" fill="#FFC0CB" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-4" rx="2" ry="3" fill="#FFB6C1" transform="rotate(90)"/>
+    <ellipse cx="0" cy="-4" rx="2" ry="3" fill="#FFC0CB" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-4" rx="2" ry="3" fill="#FFB6C1" transform="rotate(270)"/>
+    <circle cx="0" cy="0" r="1.5" fill="#FFD700"/>
+  </g>
+  
+  <!-- 叶子装饰 -->
+  <ellipse cx="35" cy="40" rx="3" ry="8" fill="#228B22" transform="rotate(30 35 40)"/>
+  <ellipse cx="30" cy="35" rx="2.5" ry="6" fill="#32CD32" transform="rotate(-20 30 35)"/>
+  
+  <!-- 花茎 -->
+  <rect x="19" y="25" width="2" height="15" fill="#228B22" transform="rotate(10 20 32.5)"/>
+  <rect x="44" y="35" width="2" height="12" fill="#228B22" transform="rotate(-5 45 41)"/>
+  <rect x="14" y="55" width="2" height="8" fill="#228B22"/>
+</svg>

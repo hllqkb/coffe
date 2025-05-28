@@ -1,0 +1,216 @@
+<!--pages/community/community.wxml-->
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="header-content">
+      <text class="title">咖啡社区</text>
+      <text class="subtitle">分享你的种植心得</text>
+    </view>
+    
+    <!-- 搜索和发布按钮 -->
+    <view class="header-actions">
+      <view class="search-btn" bindtap="showSearch">
+        <image src="/images/search-icon.png" class="search-icon"></image>
+      </view>
+      <view class="publish-btn" catchtap="showPublishModal">
+        <image src="/images/icons/edit.png" class="publish-icon"></image>
+        <text>发布</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-container {{showSearch ? 'show' : ''}}">
+    <view class="search-box">
+      <input 
+        class="search-input" 
+        placeholder="搜索帖子内容" 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="searchPosts"
+      />
+      <view class="search-actions">
+        <text class="search-confirm" bindtap="searchPosts">搜索</text>
+        <text class="search-cancel" bindtap="hideSearch">取消</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 帖子列表 -->
+  <scroll-view 
+    class="posts-container" 
+    scroll-y="true" 
+    enable-back-to-top="true"
+    refresher-enabled="true"
+    refresher-triggered="{{loading}}"
+    bindrefresherrefresh="onPullDownRefresh"
+    bindscrolltolower="onReachBottom"
+  >
+    <!-- 帖子项 -->
+    <view class="post-item" wx:for="{{posts}}" wx:key="id" data-id="{{item.id}}" bindtap="openPostDetail">
+      <!-- 用户信息 -->
+      <view class="post-header">
+        <view class="user-info">
+          <image class="user-avatar" src="{{item.user.avatar}}"></image>
+          <view class="user-details">
+            <text class="username">{{item.user.nickname}}</text>
+            <text class="post-time">{{item.createTime}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 帖子内容 -->
+      <view class="post-content">
+        <text class="content-text">{{item.content}}</text>
+      </view>
+
+      <!-- 图片展示 -->
+      <view class="post-media" wx:if="{{item.images.length > 0}}">
+        <view class="images-grid images-{{item.images.length > 4 ? 'many' : item.images.length}}">
+          <image 
+            class="post-image" 
+            src="{{img}}" 
+            mode="aspectFill"
+            wx:for="{{item.images}}" 
+            wx:for-item="img"
+            wx:key="*this"
+            data-current="{{img}}"
+            data-urls="{{item.images}}"
+            bindtap="previewImage"
+          ></image>
+        </view>
+      </view>
+
+      <!-- 视频展示 -->
+      <view class="post-media" wx:if="{{item.video}}">
+        <video 
+          class="post-video" 
+          src="{{item.video}}"
+          controls
+        ></video>
+      </view>
+
+      <!-- 互动区域 -->
+      <view class="post-actions">
+        <view class="action-item" data-id="{{item.id}}" catchtap="togglePostLike">
+          <image 
+            class="action-icon {{item.liked ? 'liked' : ''}}" 
+            src="/images/icons/{{item.liked ? 'like-filled' : 'like'}}.png"
+          ></image>
+          <text class="action-text {{item.liked ? 'liked' : ''}}">{{item.likeCount}}</text>
+        </view>
+        
+        <view class="action-item" data-id="{{item.id}}" catchtap="viewComments">
+          <image class="action-icon" src="/images/icons/comment.png"></image>
+          <text class="action-text">{{item.commentCount}}</text>
+        </view>
+        
+        <view class="action-item" data-id="{{item.id}}" catchtap="sharePost">
+          <image class="action-icon" src="/images/icons/share.png"></image>
+          <text class="action-text">{{item.shareCount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-more" wx:if="{{loading}}">
+      <image class="loading-icon" src="/images/loading.gif"></image>
+      <text>加载中...</text>
+    </view>
+    
+    <!-- 没有更多 -->
+    <view class="no-more" wx:if="{{!hasMore && posts.length > 0}}">
+      <text>没有更多内容了</text>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{posts.length === 0 && !loading}}">
+      <image src="/images/empty-garden.png"></image>
+      <text>还没有帖子</text>
+      <text>快来发布第一条帖子吧！</text>
+    </view>
+  </scroll-view>
+
+  <!-- 发布模态框 -->
+  <view class="modal-overlay {{showPublishModal ? 'show' : ''}}" bindtap="hidePublishModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <!-- 模态框头部 -->
+      <view class="modal-header">
+        <text class="modal-title">发布帖子</text>
+        <view class="close-btn" catchtap="hidePublishModal">×</view>
+      </view>
+
+      <!-- 发布表单 -->
+      <view class="publish-form">
+        <!-- 内容输入 -->
+        <textarea 
+          class="publish-textarea" 
+          placeholder="分享你的咖啡种植心得..." 
+          value="{{publishContent}}"
+          catchinput="onPublishInput"
+          maxlength="500"
+          auto-height
+        ></textarea>
+
+        <!-- 媒体选择 -->
+        <view class="media-section">
+          <!-- 图片预览 -->
+          <view class="image-preview" wx:if="{{publishImages.length > 0}}">
+            <view class="preview-item" wx:for="{{publishImages}}" wx:key="*this">
+              <image src="{{item}}" mode="aspectFill"></image>
+              <view class="delete-btn" data-index="{{index}}" catchtap="deleteImage">×</view>
+            </view>
+          </view>
+
+          <!-- 视频预览 -->
+          <view class="video-preview" wx:if="{{publishVideo}}">
+            <video src="{{publishVideo}}" controls></video>
+            <view class="delete-btn video-delete" catchtap="deleteVideo">×</view>
+          </view>
+
+          <!-- 媒体选择按钮 -->
+          <view class="media-buttons">
+            <button 
+              class="media-btn" 
+              catchtap="chooseImages"
+              disabled="{{publishVideo || publishImages.length >= 9}}"
+            >
+              <image src="/images/camera-icon.png"></image>
+              <text>图片</text>
+            </button>
+            
+            <button 
+              class="media-btn" 
+              catchtap="chooseVideo"
+              disabled="{{publishImages.length > 0 || publishVideo}}"
+            >
+              <image src="/images/icons/video.png"></image>
+              <text>视频</text>
+            </button>
+          </view>
+        </view>
+      </view>
+
+      <!-- 模态框底部 -->
+      <view class="modal-footer">
+        <button class="cancel-btn" catchtap="hidePublishModal">取消</button>
+        <button 
+          class="publish-submit-btn" 
+          catchtap="publishPost"
+          disabled="{{!publishContent || publishContent.length === 0 || publishing}}"
+          loading="{{publishing}}"
+        >
+          {{publishing ? '发布中...' : '发布'}}
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载遮罩 -->
+  <view class="loading-overlay" wx:if="{{publishing}}">
+    <view class="loading-content">
+      <image src="/images/loading.gif"></image>
+      <text>发布中...</text>
+    </view>
+  </view>
+</view>

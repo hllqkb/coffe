@@ -1,0 +1,114 @@
+{
+  "description": "咖啡小程序项目配置",
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "glob",
+        "value": "**/node_modules/dunder-proto/**"
+      },
+      {
+        "type": "glob",
+        "value": "**/node_modules/math-intrinsics/**"
+      },
+      {
+        "type": "glob",
+        "value": "**/node_modules/psl/**"
+      },
+      {
+        "type": "glob",
+        "value": "**/node_modules/ts-node/**"
+      },
+      {
+        "type": "glob",
+        "value": "**/node_modules/undici-types/**"
+      }
+    ],
+    "include": []
+  },
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "preloadBackgroundData": false,
+    "minified": true,
+    "newFeature": false,
+    "coverView": true,
+    "nodeModules": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "scopeDataCheck": false,
+    "uglifyFileName": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": false,
+    "lazyloadPlaceholderEnable": false,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": "",
+      "enable": true
+    },
+    "enableEngineNative": false,
+    "useIsolateContext": true,
+    "userConfirmedBundleSwitch": false,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./cloudfunctions/coffeeTreeManager/package.json",
+        "miniprogramNpmDistDir": "./cloudfunctions/coffeeTreeManager/"
+      },
+      {
+        "packageJsonPath": "./cloudfunctions/checkinManager/package.json",
+        "miniprogramNpmDistDir": "./cloudfunctions/checkinManager/"
+      },
+      {
+        "packageJsonPath": "./cloudfunctions/userLogin/package.json",
+        "miniprogramNpmDistDir": "./cloudfunctions/userLogin/"
+      }
+    ],
+    "minifyWXSS": true,
+    "disableUseStrict": false,
+    "minifyWXML": true,
+    "showES6CompileOption": false,
+    "useCompilerPlugins": false,
+    "compileWorklet": false,
+    "localPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
+  },
+  "cloudfunctionRoot": "cloudfunctions/",
+  "compileType": "miniprogram",
+  "libVersion": "2.19.4",
+  "appid": "wxe3ef25ff4f3d811c",
+  "projectname": "coffee-miniprogram",
+  "isGameTourist": false,
+  "condition": {
+    "search": {
+      "list": []
+    },
+    "conversation": {
+      "list": []
+    },
+    "game": {
+      "list": []
+    },
+    "plugin": {
+      "list": []
+    },
+    "gamePlugin": {
+      "list": []
+    },
+    "miniprogram": {
+      "list": []
+    }
+  },
+  "simulatorPluginLibVersion": {},
+  "editorSetting": {},
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
+}

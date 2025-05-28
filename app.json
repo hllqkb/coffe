@@ -1,0 +1,62 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/community/community",
+    "pages/garden/garden",
+    "pages/tree/tree",
+    "pages/knowledge/knowledge",
+    "pages/profile/profile",
+    "pages/signin/signin",
+    "pages/shop/shop",
+    "pages/comments/comments"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#8B4513",
+    "navigationBarTitleText": "咖啡小树",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F5DC"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#8B4513",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/community/community",
+        "iconPath": "images/community.png",
+        "selectedIconPath": "images/community-active.png",
+        "text": "社区"
+      },
+      {
+        "pagePath": "pages/garden/garden",
+        "iconPath": "images/garden.png",
+        "selectedIconPath": "images/garden-active.png",
+        "text": "我的庄园"
+      },
+      {
+        "pagePath": "pages/knowledge/knowledge",
+        "iconPath": "images/knowledge.png",
+        "selectedIconPath": "images/knowledge-active.png",
+        "text": "咖啡知识"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "iconPath": "images/profile.png",
+        "selectedIconPath": "images/profile-active.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}
