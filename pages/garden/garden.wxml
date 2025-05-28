@@ -80,7 +80,7 @@
           <!-- 成长进度 -->
           <view class="progress-overlay">
             <view class="progress-container">
-              <view class="progress-bar" style="width: {{item.progress}}%"></view>
+              <view class="progress-bar" style="width: {{item.progress}}"></view>
             </view>
             <text class="progress-text">{{item.progress}}%</text>
           </view>

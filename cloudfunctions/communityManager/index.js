@@ -17,6 +17,8 @@ exports.main = async (event, context) => {
     switch (action) {
       case 'getPosts':
         return await getPosts(event)
+      case 'getPostDetail':
+        return await getPostDetail(event)
       case 'createPost':
         return await createPost(event, wxContext)
       case 'likePost':
@@ -66,10 +68,16 @@ async function getPosts(event) {
     .limit(limit)
     .get()
   
+  // 为每个帖子添加id字段
+  const postsWithId = result.data.map(post => ({
+    ...post,
+    id: post._id
+  }))
+  
   return {
     success: true,
-    data: result.data,
-    total: result.data.length
+    data: postsWithId,
+    total: postsWithId.length
   }
 }
 
@@ -205,22 +213,118 @@ async function commentPost(event, wxContext) {
   }
 }
 
-// 获取评论列表
+// 获取帖子详情
+async function getPostDetail(event) {
+  const { postId } = event
+  
+  if (!postId) {
+    return {
+      success: false,
+      message: '帖子ID不能为空'
+    }
+  }
+  
+  try {
+    // 获取帖子详情
+    const postResult = await db.collection('community_posts').doc(postId).get()
+    
+    if (!postResult.data) {
+      return {
+        success: false,
+        message: '帖子不存在'
+      }
+    }
+    
+    // 获取评论数量（实时统计）
+    const commentCountResult = await db.collection('community_comments')
+      .where({
+        postId: postId
+      })
+      .count()
+    
+    // 组装帖子详情数据
+    const postDetail = {
+      ...postResult.data,
+      id: postResult.data._id,
+      commentCount: commentCountResult.total,
+      // 格式化时间
+      createTime: formatTime(postResult.data.createTime)
+    }
+    
+    return {
+      success: true,
+      data: postDetail
+    }
+  } catch (error) {
+    console.error('获取帖子详情失败:', error)
+    return {
+      success: false,
+      message: '获取帖子详情失败'
+    }
+  }
+}
+
+// 时间格式化函数
+function formatTime(date) {
+  if (!date) return ''
+  
+  const now = new Date()
+  const postTime = new Date(date)
+  const diff = now - postTime
+  
+  const minute = 60 * 1000
+  const hour = 60 * minute
+  const day = 24 * hour
+  
+  if (diff < minute) {
+    return '刚刚'
+  } else if (diff < hour) {
+    return Math.floor(diff / minute) + '分钟前'
+  } else if (diff < day) {
+    return Math.floor(diff / hour) + '小时前'
+  } else {
+    return postTime.toLocaleDateString() + ' ' + postTime.toLocaleTimeString().slice(0, 5)
+  }
+}
+
+// 获取评论列表（增强版）
 async function getComments(event) {
   const { postId, page = 1, limit = 20 } = event
   
-  const result = await db.collection('community_comments')
-    .where({
-      postId
-    })
-    .orderBy('createTime', 'desc')
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .get()
-  
-  return {
-    success: true,
-    data: result.data
+  try {
+    const result = await db.collection('community_comments')
+      .where({
+        postId
+      })
+      .orderBy('createTime', 'desc')
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .get()
+    
+    // 格式化评论数据
+    const comments = result.data.map(comment => ({
+      ...comment,
+      id: comment._id,
+      createTime: formatTime(comment.createTime),
+      likeCount: comment.likeCount || 0,
+      likes: comment.likes || [],
+      user: {
+        nickname: comment.author.nickname,
+        avatar: comment.author.avatar
+      }
+    }))
+    
+    return {
+      success: true,
+      data: comments
+    }
+  } catch (error) {
+    console.error('获取评论列表失败:', error)
+    return {
+      success: false,
+      message: '获取评论列表失败',
+      data: []
+    }
   }
 }
 

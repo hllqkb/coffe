@@ -37,43 +37,69 @@ Page({
   // 加载帖子信息
   async loadPostInfo() {
     try {
-      // 从社区页面传递的帖子信息或调用云函数获取
-      const pages = getCurrentPages();
-      const prevPage = pages[pages.length - 2];
+      // 加载帖子信息
+      const result = await wx.cloud.callFunction({
+        name: 'communityManager',
+        data: {
+          action: 'getPostDetail',
+          postId: this.data.postId
+        }
+      })
+      
+      if (result.result.success) {
+        const postInfo = result.result.data
+        this.setData({ 
+          postInfo: {
+            ...postInfo,
+            user: {
+              nickname: postInfo.author.nickname,
+              avatar: postInfo.author.avatar
+            }
+          }
+        })
+        return
+      }
+      
+      // 如果云函数调用失败，尝试从上一页面获取
+      const pages = getCurrentPages()
+      const prevPage = pages[pages.length - 2]
       
       if (prevPage && prevPage.data.posts) {
-        const post = prevPage.data.posts.find(p => p.id === this.data.postId || p._id === this.data.postId);
+        const post = prevPage.data.posts.find(p => p.id === this.data.postId || p._id === this.data.postId)
         if (post) {
-          this.setData({ postInfo: post });
-          return;
+          this.setData({ 
+            postInfo: {
+              ...post,
+              user: {
+                nickname: post.author ? post.author.nickname : post.user.nickname,
+                avatar: post.author ? post.author.avatar : post.user.avatar
+              }
+            }
+          })
+          return
         }
       }
       
-      // 如果没有找到帖子信息，使用模拟数据
-      const postInfo = {
-        id: this.data.postId,
-        user: {
-          nickname: '咖啡爱好者',
-          avatar: '/images/default-avatar.png'
-        },
-        content: '分享我的咖啡种植心得，今天的咖啡树长得特别好！',
-        images: ['/images/arabica.png'],
-        createTime: '2024-01-15 10:30',
-        likeCount: 25,
-        commentCount: 8
-      };
+      // 如果都失败了，显示错误信息
+      wx.showToast({
+        title: '获取帖子信息失败',
+        icon: 'none'
+      })
       
-      this.setData({ postInfo });
     } catch (error) {
-      console.error('加载帖子信息失败:', error);
+      console.error('加载帖子信息失败:', error)
+      wx.showToast({
+        title: '网络错误，请重试',
+        icon: 'none'
+      })
     }
   },
 
-  // 加载评论列表
+  // 加载评论列表（优化版）
   async loadComments(refresh = false) {
-    if (this.data.loading) return;
+    if (this.data.loading) return
     
-    this.setData({ loading: true });
+    this.setData({ loading: true })
     
     try {
       const result = await wx.cloud.callFunction({
@@ -84,70 +110,49 @@ Page({
           page: refresh ? 1 : this.data.currentPage,
           limit: 20
         }
-      });
+      })
       
       if (result.result.success) {
-        const comments = result.result.data;
+        const comments = result.result.data
+        
+        // 检查用户是否已点赞每条评论
+        const userInfo = wx.getStorageSync('userInfo')
+        const openid = userInfo ? userInfo.openid : ''
+        
+        const processedComments = comments.map(comment => ({
+          ...comment,
+          liked: comment.likes && comment.likes.includes(openid)
+        }))
         
         this.setData({
-          comments: refresh ? comments : [...this.data.comments, ...comments],
+          comments: refresh ? processedComments : [...this.data.comments, ...processedComments],
           currentPage: refresh ? 2 : this.data.currentPage + 1,
           hasMore: comments.length >= 20,
           loading: false
-        });
+        })
+        
+        // 更新帖子的评论数量
+        if (refresh && this.data.postInfo) {
+          this.setData({
+            'postInfo.commentCount': comments.length
+          })
+        }
       } else {
-        throw new Error(result.result.message || '加载失败');
+        throw new Error(result.result.message || '加载失败')
       }
     } catch (error) {
-      console.error('加载评论失败:', error);
-      // 如果云函数调用失败，使用模拟数据
-      const page = refresh ? 1 : this.data.currentPage;
-      const mockComments = this.generateMockComments(page);
-      const comments = refresh ? mockComments : [...this.data.comments, ...mockComments];
+      console.error('加载评论失败:', error)
+      this.setData({ loading: false })
       
-      this.setData({
-        comments,
-        currentPage: page + 1,
-        hasMore: mockComments.length === 10,
-        loading: false
-      });
+      if (!refresh) {
+        wx.showToast({
+          title: '加载评论失败',
+          icon: 'none'
+        })
+      }
     }
-  },
-
-  // 生成模拟评论数据
-  generateMockComments(page) {
-    const comments = [];
-    const users = [
-      { nickname: '小树种植家', avatar: '/images/default-avatar.png' },
-      { nickname: '豆子收藏家', avatar: '/images/default-avatar.png' },
-      { nickname: '咖啡达人', avatar: '/images/default-avatar.png' }
-    ];
-    
-    for (let i = 0; i < 5; i++) {
-      const user = users[i % users.length];
-      const commentId = (page - 1) * 5 + i + 1;
-      
-      comments.push({
-        id: commentId,
-        user: user,
-        content: `这是第${commentId}条评论，很棒的分享！我也在种植咖啡树，有什么经验可以交流一下。`,
-        createTime: new Date(Date.now() - i * 1800000).toISOString(),
-        likeCount: Math.floor(Math.random() * 20),
-        liked: false,
-        replies: i === 0 ? [
-          {
-            id: 101,
-            user: { nickname: '回复者', avatar: '/images/default-avatar.png' },
-            content: '同意楼主的观点！',
-            createTime: new Date(Date.now() - 900000).toISOString(),
-            replyTo: user.nickname
-          }
-        ] : []
-      });
-    }
-    
-    return comments;
-  },
+  }
+  ,
 
   // 输入评论内容
   onCommentInput(e) {

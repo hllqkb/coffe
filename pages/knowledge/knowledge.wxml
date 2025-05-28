@@ -1,7 +1,7 @@
 <!--knowledge.wxml-->
 <view class="container">
   <!-- 头部搜索区域 -->
-  <view class="search-header">
+  <view class="search-header" style="width: 547rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx">
     <view class="search-box">
       <image class="search-icon" src="/images/search-icon.png"></image>
       <input class="search-input" 

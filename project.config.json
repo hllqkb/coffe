@@ -3,24 +3,24 @@
   "packOptions": {
     "ignore": [
       {
-        "type": "glob",
-        "value": "**/node_modules/dunder-proto/**"
+        "value": "**/node_modules/dunder-proto/**",
+        "type": "glob"
       },
       {
-        "type": "glob",
-        "value": "**/node_modules/math-intrinsics/**"
+        "value": "**/node_modules/math-intrinsics/**",
+        "type": "glob"
       },
       {
-        "type": "glob",
-        "value": "**/node_modules/psl/**"
+        "value": "**/node_modules/psl/**",
+        "type": "glob"
       },
       {
-        "type": "glob",
-        "value": "**/node_modules/ts-node/**"
+        "value": "**/node_modules/ts-node/**",
+        "type": "glob"
       },
       {
-        "type": "glob",
-        "value": "**/node_modules/undici-types/**"
+        "value": "**/node_modules/undici-types/**",
+        "type": "glob"
       }
     ],
     "include": []
@@ -50,8 +50,7 @@
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
-      "outputPath": "",
-      "enable": true
+      "outputPath": ""
     },
     "enableEngineNative": false,
     "useIsolateContext": true,
@@ -87,7 +86,6 @@
   "libVersion": "2.19.4",
   "appid": "wxe3ef25ff4f3d811c",
   "projectname": "coffee-miniprogram",
-  "isGameTourist": false,
   "condition": {
     "search": {
       "list": []
@@ -109,6 +107,9 @@
     }
   },
   "simulatorPluginLibVersion": {},
-  "editorSetting": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }

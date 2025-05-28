@@ -1,18 +1,29 @@
 <!--pages/community/community.wxml-->
 <view class="container">
   <!-- 头部区域 -->
-  <view class="header" style="width: 400px; height: 287rpx; display: block; box-sizing: border-box; position: relative; left: 0rpx; top: -161rpx">
+  <view class="header">
     <view class="header-content">
-      <text class="title" style="width: 323rpx; display: block; box-sizing: content-box">咖啡社区</text>
-      <text class="subtitle" style="position: relative; left: -145rpx; top: -12rpx">分享你的种植心得</text>
+      <text class="title">☕ 咖啡社区</text>
+      <text class="subtitle">分享你的种植心得与生活美好</text>
     </view>
     
     <!-- 搜索和发布按钮 -->
     <view class="header-actions">
-      <view class="search-btn" bindtap="showSearch" style="width: 459rpx; display: flex; box-sizing: border-box; height: 60rpx">
-        <image src="/images/search-icon.png" class="search-icon"></image>
+      <!-- 布局切换按钮 -->
+      <view class="layout-switch" wx:if="{{posts.length > 0}}">
+        <view class="switch-item {{layoutMode === 'single' ? 'active' : ''}}" data-mode="single" bindtap="switchLayout">
+          <text>单列</text>
+        </view>
+        <view class="switch-item {{layoutMode === 'grid' ? 'active' : ''}}" data-mode="grid" bindtap="switchLayout">
+          <text>网格</text>
+        </view>
       </view>
-      <view class="publish-btn" catchtap="showPublishModal">
+      
+      <view class="action-btn search-btn" bindtap="showSearch">
+        <image src="/images/icons/all.png" class="search-icon"></image>
+        <text class="search-text">搜索</text>
+      </view>
+      <view class="action-btn publish-btn" catchtap="showPublishModal">
         <image src="/images/icons/edit.png" class="publish-icon"></image>
         <text>发布</text>
       </view>
@@ -20,15 +31,22 @@
   </view>
 
   <!-- 搜索框 -->
-  <view class="search-container {{showSearch ? 'show' : ''}}">
-    <view class="search-box">
-      <input 
-        class="search-input" 
-        placeholder="搜索帖子内容" 
-        value="{{searchKeyword}}"
-        bindinput="onSearchInput"
-        bindconfirm="searchPosts"
-      />
+  <view class="search-container {{showSearch ? 'show' : ''}}" bindtap="hideSearch">
+    <view class="search-box" catchtap="stopPropagation">
+      <view class="search-input-wrapper">
+        <image src="/images/icons/all.png" class="search-input-icon"></image>
+        <input 
+          class="search-input" 
+          placeholder="搜索帖子内容、用户昵称..." 
+          value="{{searchKeyword}}"
+          bindinput="onSearchInput"
+          bindconfirm="searchPosts"
+          focus="{{showSearch}}"
+        />
+        <view class="clear-btn" wx:if="{{searchKeyword}}" bindtap="clearSearch">
+          <text>×</text>
+        </view>
+      </view>
       <view class="search-actions">
         <text class="search-confirm" bindtap="searchPosts">搜索</text>
         <text class="search-cancel" bindtap="hideSearch">取消</text>
@@ -46,23 +64,28 @@
     bindrefresherrefresh="onPullDownRefresh"
     bindscrolltolower="onReachBottom"
   >
-    <!-- 帖子项 -->
-    <view class="post-item" wx:for="{{posts}}" wx:key="id" data-id="{{item.id}}" bindtap="openPostDetail">
-      <!-- 用户信息 -->
-      <view class="post-header" style="height: 105rpx; display: block; box-sizing: border-box; width: 703rpx">
-        <view class="user-info">
-          <image class="user-avatar" src="{{item.user.avatar}}"></image>
-          <view class="user-details">
-            <text class="username">{{item.user.nickname}}</text>
-            <text class="post-time">{{item.createTime}}</text>
+    <!-- 帖子网格容器 -->
+    <view class="posts-grid {{layoutMode === 'grid' ? 'grid-mode' : 'single-mode'}}">
+      <!-- 帖子项 -->
+      <view class="post-item" wx:for="{{posts}}" wx:key="id" data-id="{{item.id}}" bindtap="openPostDetail">
+        <!-- 用户信息 -->
+        <view class="post-header">
+          <view class="user-info">
+            <image class="user-avatar" src="{{item.user.avatar || '/images/default-avatar.png'}}"></image>
+            <view class="user-details">
+              <text class="username">{{item.user.nickname}}</text>
+              <text class="post-time">{{item.createTime}}</text>
+            </view>
+            <view class="post-category" wx:if="{{item.category}}">
+              <text>{{item.category}}</text>
+            </view>
           </view>
         </view>
-      </view>
 
-      <!-- 帖子内容 -->
-      <view class="post-content">
-        <text class="content-text">{{item.content}}</text>
-      </view>
+        <!-- 帖子内容 -->
+        <view class="post-content">
+          <text class="content-text">{{item.content}}</text>
+        </view>
 
       <!-- 图片展示 -->
       <view class="post-media" wx:if="{{item.images.length > 0}}">
@@ -91,26 +114,31 @@
       </view>
 
       <!-- 互动区域 -->
-      <view class="post-actions" style="width: 750rpx; height: 82rpx; display: flex; box-sizing: border-box">
-        <view class="action-item" data-id="{{item.id}}" catchtap="togglePostLike">
-          <image 
-            class="action-icon {{item.liked ? 'liked' : ''}}" 
-            src="/images/icons/{{item.liked ? 'like-filled' : 'like'}}.png"
-          ></image>
-          <text class="action-text {{item.liked ? 'liked' : ''}}">{{item.likeCount}}</text>
+        <view class="post-actions">
+          <view class="action-item like-btn {{item.liked ? 'liked' : ''}}" data-id="{{item.id}}" catchtap="togglePostLike">
+            <image 
+              class="action-icon" 
+              src="/images/icons/{{item.liked ? 'heart-filled' : 'heart'}}.png"
+            ></image>
+            <text class="action-text">{{item.likeCount || 0}}</text>
+          </view>
+          
+          <view class="action-item comment-btn" data-id="{{item.id}}" catchtap="viewComments">
+            <image class="action-icon" src="/images/icons/comment.png"></image>
+            <text class="action-text">{{item.commentCount || 0}}</text>
+          </view>
+          
+          <view class="action-item share-btn" data-id="{{item.id}}" catchtap="sharePost">
+            <image class="action-icon" src="/images/icons/share.png"></image>
+            <text class="action-text">分享</text>
+          </view>
+          
+          <view class="action-item more-btn">
+            <image class="action-icon" src="/images/icons/all.png"></image>
+          </view>
         </view>
-        
-        <view class="action-item" data-id="{{item.id}}" catchtap="viewComments">
-          <image class="action-icon" src="/images/icons/comment.png"></image>
-          <text class="action-text">{{item.commentCount}}</text>
-        </view>
-        
-        <view class="action-item" data-id="{{item.id}}" catchtap="sharePost">
-          <image class="action-icon" src="/images/icons/share.png"></image>
-          <text class="action-text">{{item.shareCount}}</text>
-        </view>
-      </view>
-    </view>
+       </view>
+     </view>
 
     <!-- 加载状态 -->
     <view class="loading-more" wx:if="{{loading}}">
@@ -124,11 +152,11 @@
     </view>
     
     <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{posts.length === 0 && !loading}}">
-      <image src="/images/empty-garden.png"></image>
-      <text>还没有帖子</text>
-      <text>快来发布第一条帖子吧！</text>
-    </view>
+     <view class="empty-state" wx:if="{{posts.length === 0 && !loading}}">
+       <image src="/images/empty-garden.png"></image>
+       <text>{{searchKeyword ? '没有找到相关帖子' : '暂无帖子内容'}}</text>
+       <text class="empty-subtitle">{{searchKeyword ? '试试其他关键词吧' : '快来发布第一条帖子吧！'}}</text>
+     </view>
   </scroll-view>
 
   <!-- 发布模态框 -->

@@ -17,10 +17,16 @@ Page({
     userInfo: null,
     // 搜索相关
     searchKeyword: '',
-    showSearch: false
+    showSearch: false,
+    // 布局模式
+    layoutMode: 'single' // 'single' 或 'grid'
   },
 
-  onLoad() {
+  onLoad(options) {
+    // 加载用户布局偏好
+    const savedLayoutMode = wx.getStorageSync('layoutMode') || 'single';
+    this.setData({ layoutMode: savedLayoutMode });
+    
     this.loadUserInfo();
     this.loadPosts();
   },
@@ -352,13 +358,10 @@ Page({
 
   // 打开帖子详情
   openPostDetail(e) {
-    const postId = e.currentTarget.dataset.id;
-    const post = this.data.posts.find(p => p.id === postId);
-    if (post) {
-      wx.navigateTo({
-        url: `/pages/comments/comments?postId=${postId}&title=${encodeURIComponent(post.content.substring(0, 20) + '...')}`
-      });
-    }
+    const postId = e.currentTarget.dataset.id
+    wx.navigateTo({
+      url: `/pages/comments/comments?postId=${postId}`
+    })
   },
 
   // 查看评论
@@ -416,19 +419,100 @@ Page({
     this.setData({ showSearch: false, searchKeyword: '' });
   },
 
+  stopPropagation() {
+    // 阻止事件冒泡，防止点击搜索框内容时关闭弹窗
+  },
+
   onSearchInput(e) {
     this.setData({ searchKeyword: e.detail.value });
   },
 
-  searchPosts() {
+  async searchPosts() {
     const keyword = this.data.searchKeyword.trim();
-    if (!keyword) return;
+    if (!keyword) {
+      wx.showToast({
+        title: '请输入搜索关键词',
+        icon: 'none'
+      });
+      return;
+    }
     
-    // 这里应该调用搜索接口
-    wx.showToast({
-      title: `搜索: ${keyword}`,
-      icon: 'none'
+    this.setData({ 
+      showSearch: false,
+      loading: true,
+      posts: [],
+      currentPage: 1,
+      hasMore: true
     });
+    
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'communityManager',
+        data: {
+          action: 'getPosts',
+          page: 1,
+          limit: 10,
+          keyword: keyword
+        }
+      });
+      
+      if (result.result.success) {
+        const posts = result.result.data;
+        
+        // 检查用户是否已点赞每个帖子
+        const userInfo = wx.getStorageSync('userInfo');
+        const openid = userInfo ? userInfo.openid : '';
+        
+        const postsWithLikeStatus = posts.map(post => ({
+          ...post,
+          liked: post.likes && post.likes.includes(openid)
+        }));
+        
+        this.setData({
+          posts: postsWithLikeStatus,
+          hasMore: posts.length >= 10,
+          loading: false
+        });
+        
+        if (posts.length === 0) {
+          wx.showToast({
+            title: '没有找到相关内容',
+            icon: 'none'
+          });
+        }
+      } else {
+        wx.showToast({
+          title: result.result.message || '搜索失败',
+          icon: 'none'
+        });
+        this.setData({ loading: false });
+      }
+    } catch (error) {
+      console.error('搜索失败:', error);
+      wx.showToast({
+        title: '搜索失败，请重试',
+        icon: 'none'
+      });
+      this.setData({ loading: false });
+    }
+  },
+
+  // 清除搜索，重新加载所有帖子
+  clearSearch() {
+    this.setData({
+      searchKeyword: '',
+      showSearch: false
+    });
+    this.refreshPosts();
+  },
+
+  // 切换布局模式
+  switchLayout(e) {
+    const mode = e.currentTarget.dataset.mode;
+    this.setData({ layoutMode: mode });
+    
+    // 保存用户偏好
+    wx.setStorageSync('layoutMode', mode);
   },
 
   // 页面分享
