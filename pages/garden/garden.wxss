@@ -399,38 +399,46 @@
 }
 
 .decoration-item {
-  display: inline-block;
   width: 120rpx;
-  text-align: center;
-  margin-right: 20rpx;
+  height: 160rpx;
+  margin: 0 10rpx;
+  padding: 10rpx;
   background: white;
-  border-radius: 15rpx;
-  padding: 20rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
-  vertical-align: top;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .decoration-item image {
   width: 60rpx;
   height: 60rpx;
-  margin-bottom: 10rpx;
+  margin-bottom: 5rpx;
+  flex-shrink: 0;
 }
 
 .decoration-item text {
-  display: block;
-  font-size: 22rpx;
+  font-size: 24rpx;
   color: #333;
-  margin-bottom: 10rpx;
+  text-align: center;
+  margin-bottom: 5rpx;
+  flex-shrink: 0;
 }
 
 .decoration-btn {
-  width: 100%;
+  width: 80rpx;
   height: 50rpx;
-  background: #32CD32;
+  background: #4CAF50;
   color: white;
   border: none;
   border-radius: 25rpx;
-  font-size: 20rpx;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* 浮动操作按钮 */

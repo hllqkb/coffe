@@ -1,17 +1,27 @@
 <!--订单页面-->
 <view class="orders-container">
-  <!-- 状态筛选标签 -->
+  <!-- 状态筛选 -->
   <view class="status-tabs">
-    <scroll-view class="tabs-scroll" scroll-x="true">
-      <view class="tab-item {{activeStatus === item.id ? 'active' : ''}}" 
-            wx:for="{{statusTabs}}" 
-            wx:key="id"
-            bindtap="onStatusChange"
-            data-status="{{item.id}}">
-        <text class="tab-name">{{item.name}}</text>
-        <text class="tab-count" wx:if="{{item.count > 0}}">({{item.count}})</text>
-      </view>
-    </scroll-view>
+    <view class="tab {{activeStatus === 'all' ? 'active' : ''}}" bindtap="switchStatus" data-status="all">
+      <image src="/images/order-all.svg" class="tab-icon"></image>
+      <text>全部订单</text>
+    </view>
+    <view class="tab {{activeStatus === 'pending' ? 'active' : ''}}" bindtap="switchStatus" data-status="pending">
+      <image src="/images/order-pending.svg" class="tab-icon"></image>
+      <text>待付款</text>
+    </view>
+    <view class="tab {{activeStatus === 'paid' ? 'active' : ''}}" bindtap="switchStatus" data-status="paid">
+      <image src="/images/order-paid.svg" class="tab-icon"></image>
+      <text>已付款</text>
+    </view>
+    <view class="tab {{activeStatus === 'shipped' ? 'active' : ''}}" bindtap="switchStatus" data-status="shipped">
+      <image src="/images/order-shipped.svg" class="tab-icon"></image>
+      <text>已发货</text>
+    </view>
+    <view class="tab {{activeStatus === 'delivered' ? 'active' : ''}}" bindtap="switchStatus" data-status="delivered">
+      <image src="/images/order-delivered.svg" class="tab-icon"></image>
+      <text>已送达</text>
+    </view>
   </view>
 
   <!-- 订单列表 -->

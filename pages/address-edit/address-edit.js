@@ -137,64 +137,7 @@ Page({
     })
   },
 
-  // 获取当前位置
-  async getCurrentLocation() {
-    try {
-      wx.showLoading({ title: '定位中...' })
-      
-      // 获取用户授权
-      const authRes = await wx.getSetting()
-      if (!authRes.authSetting['scope.userLocation']) {
-        const res = await wx.authorize({ scope: 'scope.userLocation' })
-        if (!res) {
-          wx.showToast({ title: '需要位置权限', icon: 'none' })
-          return
-        }
-      }
-      
-      // 获取当前位置
-      const locationRes = await wx.getLocation({
-        type: 'gcj02'
-      })
-      
-      // 检查位置数据
-      if (!locationRes || !locationRes.latitude || !locationRes.longitude) {
-        throw new Error('无法获取位置信息')
-      }
-      
-      // 逆地理编码获取地址信息
-      const reverseRes = await wx.cloud.callFunction({
-        name: 'locationManager',
-        data: {
-          action: 'reverseGeocode',
-          latitude: locationRes.latitude,
-          longitude: locationRes.longitude
-        }
-      })
-      
-      if (reverseRes.result.success) {
-        const addressInfo = reverseRes.result.data
-        
-        this.setData({
-          'formData.province': addressInfo.province,
-          'formData.city': addressInfo.city,
-          'formData.district': addressInfo.district,
-          'formData.detail': addressInfo.street || ''
-        })
-        
-        this.updateRegionText()
-        wx.showToast({ title: '定位成功', icon: 'success' })
-      } else {
-        throw new Error(reverseRes.result.message)
-      }
-      
-    } catch (error) {
-      console.error('获取位置失败:', error)
-      wx.showToast({ title: '定位失败', icon: 'none' })
-    } finally {
-      wx.hideLoading()
-    }
-  },
+
 
   // 表单验证
   validateForm() {

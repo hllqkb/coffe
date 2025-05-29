@@ -93,8 +93,7 @@ Page({
       }
     ],
     
-    // 邀请奖励
-    inviteReward: 0,
+
     
     // 版本信息
     version: '1.0.0',
@@ -134,7 +133,7 @@ Page({
         this.loadUserStats(),
         this.loadUserResources(),
         this.loadAchievements(),
-        this.loadInviteReward()
+
       ]);
     } catch (error) {
       console.error('初始化页面失败:', error);
@@ -274,17 +273,7 @@ Page({
     }
   },
 
-  // 加载邀请奖励
-  async loadInviteReward() {
-    try {
-      // 暂时设置为0，后续可以根据需要实现邀请功能
-      this.setData({
-        inviteReward: 0
-      });
-    } catch (error) {
-      console.error('加载邀请奖励失败:', error);
-    }
-  },
+
 
   // 刷新用户数据
   async loadUserData() {
@@ -495,12 +484,7 @@ Page({
     })
   },
 
-  // 导航到邀请页面
-  navigateToInvite() {
-    wx.navigateTo({
-      url: '/pages/profile/invite/invite'
-    });
-  },
+
 
   // 导航到反馈页面
   navigateToFeedback() {

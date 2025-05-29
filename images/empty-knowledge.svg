@@ -1,0 +1,22 @@
+<svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 空状态背景 -->
+  <rect width="200" height="150" fill="#F8F9FA"/>
+  
+  <!-- 书本图标 -->
+  <rect x="75" y="40" width="50" height="35" rx="3" fill="#E9ECEF" stroke="#DEE2E6" stroke-width="1"/>
+  <rect x="75" y="40" width="50" height="8" fill="#6C757D"/>
+  
+  <!-- 书页线条 -->
+  <line x1="80" y1="55" x2="115" y2="55" stroke="#CED4DA" stroke-width="1"/>
+  <line x1="80" y1="60" x2="110" y2="60" stroke="#CED4DA" stroke-width="1"/>
+  <line x1="80" y1="65" x2="115" y2="65" stroke="#CED4DA" stroke-width="1"/>
+  
+  <!-- 咖啡豆装饰 -->
+  <ellipse cx="85" cy="85" rx="3" ry="2" fill="#8B4513"/>
+  <ellipse cx="100" cy="85" rx="3" ry="2" fill="#8B4513"/>
+  <ellipse cx="115" cy="85" rx="3" ry="2" fill="#8B4513"/>
+  
+  <!-- 提示文字 -->
+  <text x="100" y="105" text-anchor="middle" fill="#6C757D" font-size="12" font-family="Arial, sans-serif">暂无咖啡知识</text>
+  <text x="100" y="120" text-anchor="middle" fill="#ADB5BD" font-size="10" font-family="Arial, sans-serif">敬请期待更多精彩内容</text>
+</svg>

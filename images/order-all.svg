@@ -1,0 +1,10 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 全部订单图标 -->
+  <circle cx="32" cy="32" r="30" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+  <!-- 列表图标 -->
+  <rect x="20" y="22" width="24" height="3" rx="1" fill="white"/>
+  <rect x="20" y="28" width="20" height="3" rx="1" fill="white"/>
+  <rect x="20" y="34" width="22" height="3" rx="1" fill="white"/>
+  <rect x="20" y="40" width="18" height="3" rx="1" fill="white"/>
+  <text x="32" y="54" text-anchor="middle" fill="white" font-size="8" font-weight="bold">全部订单</text>
+</svg>

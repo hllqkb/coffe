@@ -118,7 +118,7 @@
           <view class="action-item like-btn {{item.liked ? 'liked' : ''}}" data-id="{{item.id}}" catchtap="togglePostLike">
             <image 
               class="action-icon" 
-              src="/images/icons/{{item.liked ? 'heart-filled' : 'heart'}}.png"
+              src="/images/icons/{{item.liked ? 'like-filled' : 'like'}}.svg"
             ></image>
             <text class="action-text">{{item.likeCount || 0}}</text>
           </view>

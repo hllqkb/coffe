@@ -161,7 +161,7 @@
   </view>
 
   <!-- 庄园装饰 -->
-  <view class="garden-decorations" wx:if="{{myTrees.length > 0}}">
+  <view class="garden-decorations" wx:if="{{myTrees.length > 0}}" style="width: 454rpx; display: block; box-sizing: border-box">
     <view class="section-title">庄园装饰</view>
     <scroll-view class="decorations-scroll" scroll-x="true">
       <view class="decoration-item" wx:for="{{decorations}}" wx:key="id">

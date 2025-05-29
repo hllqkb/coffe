@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 签到图标 -->
+  <circle cx="24" cy="24" r="22" fill="#FF6B6B" stroke="#E55555" stroke-width="2"/>
+  <!-- 日历 -->
+  <rect x="14" y="16" width="20" height="16" rx="2" fill="white"/>
+  <rect x="14" y="16" width="20" height="4" rx="2" fill="#FF6B6B"/>
+  <!-- 日期格子 -->
+  <rect x="16" y="22" width="3" height="3" fill="#FF6B6B"/>
+  <rect x="20" y="22" width="3" height="3" fill="#DDD"/>
+  <rect x="24" y="22" width="3" height="3" fill="#DDD"/>
+  <rect x="28" y="22" width="3" height="3" fill="#DDD"/>
+  <rect x="16" y="26" width="3" height="3" fill="#DDD"/>
+  <rect x="20" y="26" width="3" height="3" fill="#DDD"/>
+  <rect x="24" y="26" width="3" height="3" fill="#DDD"/>
+  <text x="24" y="42" text-anchor="middle" fill="white" font-size="6" font-weight="bold">签到</text>
+</svg>

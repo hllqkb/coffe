@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 已发货图标 -->
+  <circle cx="32" cy="32" r="30" fill="#1E90FF" stroke="#0066CC" stroke-width="2"/>
+  <!-- 卡车图标 -->
+  <rect x="16" y="26" width="20" height="12" rx="2" fill="white"/>
+  <rect x="36" y="30" width="8" height="8" rx="1" fill="white"/>
+  <circle cx="22" cy="42" r="3" fill="white"/>
+  <circle cx="40" cy="42" r="3" fill="white"/>
+  <path d="M44 30l4-4v8l-4-4z" fill="white"/>
+  <text x="32" y="54" text-anchor="middle" fill="white" font-size="8" font-weight="bold">已发货</text>
+</svg>

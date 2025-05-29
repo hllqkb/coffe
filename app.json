@@ -12,13 +12,14 @@
     "pages/comments/comments",
     "pages/address/address",
     "pages/address-edit/address-edit",
-    "pages/orders/orders"
+    "pages/orders/orders",
+
+    "pages/profile/feedback/feedback",
+    "pages/profile/help/help",
+    "pages/profile/about/about",
+    "pages/profile/settings/settings"
   ],
-  "permission": {
-  "scope.userLocation": {
-    "desc": "你的位置信息将用于小程序位置接口的效果展示"
-}
-  },
+
 
   "window": {
     "backgroundTextStyle": "light",

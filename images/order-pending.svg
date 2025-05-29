@@ -1,0 +1,7 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 待付款图标 -->
+  <circle cx="32" cy="32" r="30" fill="#FFA500" stroke="#FF8C00" stroke-width="2"/>
+  <path d="M20 32h8l4-8 4 16 4-8h4" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="32" cy="20" r="3" fill="white"/>
+  <text x="32" y="50" text-anchor="middle" fill="white" font-size="8" font-weight="bold">待付款</text>
+</svg>

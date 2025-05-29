@@ -1039,5 +1039,13 @@ Page({
           icon: 'none'
         });
     }
+  },
+
+  // 切换标签页
+  switchTab(e) {
+    const tab = e.currentTarget.dataset.tab;
+    this.setData({
+      activeTab: tab
+    });
   }
 });

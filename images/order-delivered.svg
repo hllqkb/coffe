@@ -1,0 +1,9 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 已送达图标 -->
+  <circle cx="32" cy="32" r="30" fill="#228B22" stroke="#006400" stroke-width="2"/>
+  <!-- 房子图标 -->
+  <path d="M32 18l-12 10v14h8v-8h8v8h8V28l-12-10z" fill="white"/>
+  <path d="M20 32l12-10 12 10" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="28" y="36" width="8" height="6" fill="#228B22"/>
+  <text x="32" y="54" text-anchor="middle" fill="white" font-size="8" font-weight="bold">已送达</text>
+</svg>

@@ -121,21 +121,7 @@
           bindchange="togglePrivacy"
         />
       </view>
-      <view class="setting-item">
-        <view class="setting-content">
-          <image src="/images/icons/invite.png" class="setting-icon"></image>
-          <view class="setting-info">
-            <text class="setting-text">允许好友邀请</text>
-            <text class="setting-desc">允许好友邀请您参与活动</text>
-          </view>
-        </view>
-        <switch 
-          class="setting-switch" 
-          checked="{{settings.privacy.allowFriendInvite}}"
-          data-type="allowFriendInvite"
-          bindchange="togglePrivacy"
-        />
-      </view>
+
       <view class="setting-item">
         <view class="setting-content">
           <image src="/images/icons/garden.png" class="setting-icon"></image>

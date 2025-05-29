@@ -459,6 +459,13 @@ Page({
       withShareTicket: true,
       menus: ['shareAppMessage', 'shareTimeline']
     })
+    
+    // 触发分享
+    wx.shareAppMessage({
+      title: '一起来种植咖啡树吧！',
+      path: '/pages/index/index',
+      imageUrl: '/images/share-image.png'
+    })
   },
 
   // 获取用户头像昵称

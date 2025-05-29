@@ -156,10 +156,10 @@ Page({
       progress: Math.min(progress, 100),
       healthStatus: healthStatus.status,
       healthText: healthStatus.text,
-      plantTimeText: app.formatTime(plantTime),
-      lastWateredText: lastWatered ? app.formatTime(lastWatered) : '从未',
-      lastFertilizedText: lastFertilized ? app.formatTime(lastFertilized) : '从未',
-      expectedMatureText: this.calculateExpectedMatureTime(tree, variety),
+      plantTimeText: this.formatDateTime(plantTime),
+        lastWateredText: lastWatered ? `${this.formatDateTime(lastWatered)} (${this.getHoursDiff(lastWatered)}小时前)` : '从未浇水',
+        lastFertilizedText: lastFertilized ? `${this.formatDateTime(lastFertilized)} (${this.getHoursDiff(lastFertilized)}小时前)` : '从未施肥',
+        expectedMatureText: this.calculateExpectedMatureTime(tree, variety),
       canHarvest,
       cannotWater,
       cannotFertilize,
@@ -266,25 +266,25 @@ Page({
       {
         id: 1,
         name: '小花',
-        image: '/images/decoration-flower.png',
+        image: '/images/decoration-flower.svg',
         cost: 50
       },
       {
         id: 2,
         name: '蝴蝶',
-        image: '/images/decoration-butterfly.png',
+        image: '/images/decoration-butterfly.svg',
         cost: 80
       },
       {
         id: 3,
         name: '小鸟',
-        image: '/images/decoration-bird.png',
+        image: '/images/decoration-bird.svg',
         cost: 100
       },
       {
         id: 4,
         name: '彩虹',
-        image: '/images/decoration-rainbow.png',
+        image: '/images/decoration-rainbow.svg',
         cost: 150
       }
     ]
@@ -293,11 +293,28 @@ Page({
   },
 
   // 浇水
-  waterTree(e) {
+  async waterTree(e) {
     const tree = e.currentTarget.dataset.tree
     
+    // 重新加载用户资源确保数据最新
+    await this.loadUserResources()
+    
+    // 检查水滴数量
     if (this.data.waterCount <= 0) {
-      wx.showToast({ title: '水滴不足，请前往商店购买', icon: 'none' })
+      wx.showModal({
+        title: '水滴不足',
+        content: '您的水滴不足，是否前往商店购买？',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '去商店',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({
+              url: '/pages/shop/shop'
+            })
+          }
+        }
+      })
       return
     }
     
@@ -316,11 +333,27 @@ Page({
   },
 
   // 施肥
-  fertilizeTree(e) {
+  async fertilizeTree(e) {
     const tree = e.currentTarget.dataset.tree
     
+    // 重新加载用户资源确保数据最新
+    await this.loadUserResources()
+    
     if (this.data.fertilizerCount <= 0) {
-      wx.showToast({ title: '肥料不足，请前往商店购买', icon: 'none' })
+      wx.showModal({
+        title: '肥料不足',
+        content: '您的肥料不足，是否前往商店购买？',
+        showCancel: true,
+        cancelText: '取消',
+        confirmText: '去商店',
+        success: (res) => {
+          if (res.confirm) {
+            wx.switchTab({
+              url: '/pages/shop/shop'
+            })
+          }
+        }
+      })
       return
     }
     
@@ -654,10 +687,39 @@ Page({
     wx.switchTab({ url: '/pages/index/index' })
   },
 
+  // 格式化日期时间
+  formatDateTime(date) {
+    if (!date) return ''
+    
+    const d = new Date(date)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const hour = String(d.getHours()).padStart(2, '0')
+    const minute = String(d.getMinutes()).padStart(2, '0')
+    
+    return `${year}-${month}-${day} ${hour}:${minute}`
+  },
+
+  // 计算时间差（小时）
+  getHoursDiff(date) {
+    if (!date) return 0
+    return Math.floor((Date.now() - new Date(date).getTime()) / (1000 * 60 * 60))
+  },
+
   // 下拉刷新
   onPullDownRefresh() {
     this.refreshData().then(() => {
       wx.stopPullDownRefresh()
     })
+  },
+
+  // 页面分享
+  onShareAppMessage() {
+    return {
+      title: '我的咖啡庄园',
+      path: '/pages/garden/garden',
+      imageUrl: '/images/garden-share.jpg'
+    }
   }
 })

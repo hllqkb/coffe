@@ -16,7 +16,6 @@ Page({
       },
       privacy: {
         showOnline: true,
-        allowFriendInvite: true,
         showGarden: true
       },
       game: {
@@ -38,9 +37,9 @@ Page({
     }
   },
 
-  onLoad() {
-    this.loadUserInfo()
-    this.loadSettings()
+  async onLoad() {
+    await this.loadUserInfo()
+    await this.loadSettings()
     this.getCacheSize()
   },
 
@@ -57,13 +56,26 @@ Page({
   },
 
   // 加载设置
-  loadSettings() {
+  async loadSettings() {
     try {
-      const settings = wx.getStorageSync('appSettings')
-      if (settings) {
-        this.setData({ 
-          settings: { ...this.data.settings, ...settings }
+      // 从本地存储获取用户信息
+      const userInfo = wx.getStorageSync('userInfo')
+      if (userInfo && userInfo.settings) {
+        this.setData({
+          settings: { ...this.data.settings, ...userInfo.settings }
         })
+      } else if (userInfo && userInfo._id) {
+        // 如果本地没有设置，从数据库加载
+        const db = wx.cloud.database()
+        const result = await db.collection('users').doc(userInfo._id).get()
+        if (result.data && result.data.settings) {
+          this.setData({
+            settings: { ...this.data.settings, ...result.data.settings }
+          })
+          // 更新本地存储
+          userInfo.settings = result.data.settings
+          wx.setStorageSync('userInfo', userInfo)
+        }
       }
     } catch (error) {
       console.error('加载设置失败:', error)
@@ -71,19 +83,35 @@ Page({
   },
 
   // 保存设置
-  saveSettings() {
+  async saveSettings() {
     try {
-      wx.setStorageSync('appSettings', this.data.settings)
-      wx.showToast({
-        title: '设置已保存',
-        icon: 'success'
+      wx.showLoading({ title: '保存中...' })
+      
+      // 获取用户信息
+      const userInfo = wx.getStorageSync('userInfo')
+      if (!userInfo || !userInfo._id) {
+        throw new Error('用户信息不存在')
+      }
+      
+      // 更新数据库中的用户设置
+      const db = wx.cloud.database()
+      await db.collection('users').doc(userInfo._id).update({
+        data: {
+          settings: this.data.settings,
+          updateTime: new Date()
+        }
       })
+      
+      // 更新本地存储
+      userInfo.settings = this.data.settings
+      wx.setStorageSync('userInfo', userInfo)
+      
+      wx.showToast({ title: '保存成功', icon: 'success' })
     } catch (error) {
       console.error('保存设置失败:', error)
-      wx.showToast({
-        title: '保存失败',
-        icon: 'error'
-      })
+      wx.showToast({ title: '保存失败', icon: 'none' })
+    } finally {
+      wx.hideLoading()
     }
   },
 
@@ -303,7 +331,6 @@ Page({
             },
             privacy: {
               showOnline: true,
-              allowFriendInvite: true,
               showGarden: true
             },
             game: {
