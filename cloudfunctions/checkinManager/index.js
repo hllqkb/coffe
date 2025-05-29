@@ -1,52 +1,409 @@
 // cloudfunctions/checkinManager/index.js
-const cloud = require('wx-server-sdk');
+const cloud = require('wx-server-sdk')
 
-// 初始化云开发环境
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
-});
+})
 
-const db = cloud.database();
-const _ = db.command;
+const db = cloud.database()
+const _ = db.command
 
-// 云函数入口函数
 exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext();
-  const { OPENID } = wxContext;
-  const { action } = event;
+  const { action } = event
+  const { OPENID } = cloud.getWXContext()
   
   try {
     switch (action) {
       case 'checkin':
-        return await performCheckin(OPENID);
+        return await performCheckin(OPENID)
       case 'getCheckinStatus':
-        return await getCheckinStatus(OPENID);
+        return await getCheckinStatus(OPENID)
       case 'getCheckinHistory':
-        return await getCheckinHistory(OPENID, event.limit);
-      case 'getCheckinCalendar':
-        return await getCheckinCalendar(OPENID, event.year, event.month);
+        return await getCheckinHistory(OPENID, event.page, event.limit)
       default:
         return {
           success: false,
-          message: '未知操作类型'
-        };
+          message: '未知操作'
+        }
     }
   } catch (error) {
-    console.error('签到操作失败:', error);
+    console.error('签到管理云函数错误:', error)
     return {
       success: false,
-      message: '操作失败，请重试',
+      message: '服务器错误',
       error: error.message
+    }
+  }
+}
+
+// 执行签到
+async function performCheckin(openid) {
+  const today = new Date()
+  const todayStr = today.toDateString()
+  
+  // 检查今日是否已签到
+  const todayCheckin = await db.collection('checkins')
+    .where({
+      openid: openid,
+      checkinDate: todayStr
+    })
+    .get()
+  
+  if (todayCheckin.data.length > 0) {
+    return {
+      success: false,
+      message: '今日已签到'
+    }
+  }
+  
+  // 获取签到统计
+  let stats = await db.collection('checkin_stats')
+    .where({ openid: openid })
+    .get()
+  
+  let consecutiveDays = 1
+  let totalDays = 1
+  let lastCheckInDate = todayStr
+  
+  if (stats.data.length > 0) {
+    const currentStats = stats.data[0]
+    totalDays = (currentStats.totalDays || 0) + 1
+    
+    // 检查是否连续签到
+    if (currentStats.lastCheckInDate) {
+      const lastDate = new Date(currentStats.lastCheckInDate)
+      const yesterday = new Date(today)
+      yesterday.setDate(yesterday.getDate() - 1)
+      
+      if (lastDate.toDateString() === yesterday.toDateString()) {
+        // 连续签到
+        consecutiveDays = (currentStats.consecutiveDays || 0) + 1
+      } else {
+        // 不连续，重新开始
+        consecutiveDays = 1
+      }
+    }
+    
+    // 更新统计
+    await db.collection('checkin_stats')
+      .doc(currentStats._id)
+      .update({
+        data: {
+          consecutiveDays: consecutiveDays,
+          totalDays: totalDays,
+          lastCheckInDate: todayStr,
+          updateTime: db.serverDate()
+        }
+      })
+  } else {
+    // 创建新的统计记录
+    await db.collection('checkin_stats')
+      .add({
+        data: {
+          openid: openid,
+          consecutiveDays: consecutiveDays,
+          totalDays: totalDays,
+          lastCheckInDate: todayStr,
+          createTime: db.serverDate(),
+          updateTime: db.serverDate()
+        }
+      })
+  }
+  
+  // 计算奖励
+  const reward = calculateCheckinReward(consecutiveDays)
+  
+  // 添加签到记录
+  await db.collection('checkins')
+    .add({
+      data: {
+        openid: openid,
+        checkinDate: todayStr,
+        consecutiveDays: consecutiveDays,
+        totalDays: totalDays,
+        reward: reward,
+        checkinTime: db.serverDate()
+      }
+    })
+  
+  // 更新用户资源
+  const userRes = await db.collection('users')
+    .where({ openid: openid })
+    .get()
+  
+  if (userRes.data.length > 0) {
+    const user = userRes.data[0]
+    const updateData = {}
+    
+    if (reward.type === 'coin') {
+      updateData.coinCount = (user.coinCount || 0) + reward.amount
+    } else if (reward.type === 'water') {
+      updateData.waterCount = (user.waterCount || 0) + reward.amount
+    } else if (reward.type === 'fertilizer') {
+      updateData.fertilizerCount = (user.fertilizerCount || 0) + reward.amount
+    } else if (reward.type === 'special') {
+      // 特殊奖励包含多种资源
+      updateData.coinCount = (user.coinCount || 0) + 200
+      updateData.waterCount = (user.waterCount || 0) + 10
+      updateData.fertilizerCount = (user.fertilizerCount || 0) + 5
+    }
+    
+    await db.collection('users')
+      .doc(user._id)
+      .update({
+        data: updateData
+      })
+  }
+  
+  return {
+    success: true,
+    message: '签到成功',
+    data: {
+      consecutiveDays: consecutiveDays,
+      totalDays: totalDays,
+      reward: reward
+    }
+  }
+}
+
+// 获取每日任务
+async function getDailyTasks(openid) {
+  try {
+    const today = getDateString(new Date());
+    
+    // 查询今日任务进度
+    const taskResult = await db.collection('daily_tasks')
+      .where({
+        openid,
+        date: today
+      })
+      .get();
+    
+    // 查询用户信息以判断任务解锁状态
+    const userResult = await db.collection('users')
+      .where({ openid })
+      .get();
+    
+    const userInfo = userResult.data[0] || {};
+    const taskData = taskResult.data[0] || { tasks: {} };
+    
+    // 定义任务配置
+    const taskConfigs = [
+      {
+        id: 'daily_checkin',
+        unlocked: true
+      },
+      {
+        id: 'water_tree',
+        unlocked: true
+      },
+      {
+        id: 'read_knowledge',
+        unlocked: true
+      },
+      {
+        id: 'community_interact',
+        unlocked: true
+      },
+      {
+        id: 'harvest_coffee',
+        unlocked: (userInfo.trees && userInfo.trees.some(tree => tree.stage === 'mature'))
+      }
+    ];
+    
+    // 构建任务列表
+    const tasks = taskConfigs.map(config => {
+      const taskProgress = taskData.tasks[config.id] || { progress: 0, completed: false };
+      return {
+        id: config.id,
+        progress: taskProgress.progress,
+        completed: taskProgress.completed,
+        unlocked: config.unlocked
+      };
+    });
+    
+    return {
+      success: true,
+      data: tasks
+    };
+  } catch (error) {
+    console.error('获取每日任务失败:', error);
+    return {
+      success: false,
+      message: '获取每日任务失败'
     };
   }
-};
+}
+
+// 更新任务进度
+async function updateTaskProgress(openid, taskId, progress) {
+  try {
+    const today = getDateString(new Date());
+    
+    // 获取任务配置
+    const taskConfigs = {
+      'daily_checkin': { target: 1, reward: { type: 'coin', amount: 10 } },
+      'water_tree': { target: 3, reward: { type: 'fertilizer', amount: 5 } },
+      'read_knowledge': { target: 2, reward: { type: 'water', amount: 15 } },
+      'community_interact': { target: 5, reward: { type: 'coin', amount: 20 } },
+      'harvest_coffee': { target: 1, reward: { type: 'coin', amount: 50 } }
+    };
+    
+    const taskConfig = taskConfigs[taskId];
+    if (!taskConfig) {
+      return {
+        success: false,
+        message: '无效的任务ID'
+      };
+    }
+    
+    // 检查任务是否完成
+    const completed = progress >= taskConfig.target;
+    
+    // 更新任务进度
+    await db.collection('daily_tasks')
+      .where({ openid, date: today })
+      .update({
+        data: {
+          [`tasks.${taskId}`]: {
+            progress,
+            completed,
+            updatedAt: new Date()
+          }
+        }
+      });
+    
+    let completedTask = null;
+    
+    // 如果任务完成，发放奖励
+    if (completed) {
+      await giveTaskReward(openid, taskId, taskConfig.reward);
+      completedTask = {
+        id: taskId,
+        title: getTaskTitle(taskId),
+        reward: taskConfig.reward
+      };
+    }
+    
+    return {
+      success: true,
+      data: {
+        taskId,
+        progress,
+        completed,
+        completedTask
+      }
+    };
+  } catch (error) {
+    console.error('更新任务进度失败:', error);
+    return {
+      success: false,
+      message: '更新任务进度失败'
+    };
+  }
+}
+
+// 领取任务奖励
+async function claimTaskReward(openid, taskId) {
+  try {
+    const today = getDateString(new Date());
+    
+    // 查询任务状态
+    const taskResult = await db.collection('daily_tasks')
+      .where({ openid, date: today })
+      .get();
+    
+    const taskData = taskResult.data[0];
+    if (!taskData || !taskData.tasks[taskId] || !taskData.tasks[taskId].completed) {
+      return {
+        success: false,
+        message: '任务未完成或不存在'
+      };
+    }
+    
+    if (taskData.tasks[taskId].claimed) {
+      return {
+        success: false,
+        message: '奖励已领取'
+      };
+    }
+    
+    // 标记奖励已领取
+    await db.collection('daily_tasks')
+      .where({ openid, date: today })
+      .update({
+        data: {
+          [`tasks.${taskId}.claimed`]: true,
+          [`tasks.${taskId}.claimedAt`]: new Date()
+        }
+      });
+    
+    return {
+      success: true,
+      message: '奖励领取成功'
+    };
+  } catch (error) {
+    console.error('领取任务奖励失败:', error);
+    return {
+      success: false,
+      message: '领取任务奖励失败'
+    };
+  }
+}
+
+// 发放任务奖励
+async function giveTaskReward(openid, taskId, reward) {
+  try {
+    // 更新用户资源
+    const updateData = {};
+    if (reward.type === 'water') {
+      updateData['resources.water'] = _.inc(reward.amount);
+    } else if (reward.type === 'fertilizer') {
+      updateData['resources.fertilizer'] = _.inc(reward.amount);
+    } else if (reward.type === 'coin') {
+      updateData['resources.coin'] = _.inc(reward.amount);
+    }
+    
+    await db.collection('users')
+      .where({ openid })
+      .update({
+        data: updateData
+      });
+    
+    // 记录奖励历史
+    await db.collection('reward_history').add({
+      data: {
+        openid,
+        type: 'task',
+        taskId,
+        reward,
+        timestamp: new Date(),
+        date: getDateString(new Date())
+      }
+    });
+  } catch (error) {
+    console.error('发放任务奖励失败:', error);
+  }
+}
+
+// 获取任务标题
+function getTaskTitle(taskId) {
+  const titles = {
+    'daily_checkin': '每日签到',
+    'water_tree': '浇水植物',
+    'read_knowledge': '学习知识',
+    'community_interact': '社区互动',
+    'harvest_coffee': '收获咖啡'
+  };
+  return titles[taskId] || '未知任务';
+}
 
 // 执行签到
 async function performCheckin(openid) {
   const now = new Date();
   const today = getDateString(now);
   
-  // 检查今天是否已签到
+  // 检查今天是否已经签到
   const todayCheckinResult = await db.collection('checkin_records')
     .where({
       openid: openid,
@@ -62,7 +419,10 @@ async function performCheckin(openid) {
   }
   
   // 获取用户信息
-  const userResult = await db.collection('users').where({ openid }).get();
+  const userResult = await db.collection('users')
+    .where({ openid: openid })
+    .get();
+  
   if (userResult.data.length === 0) {
     return {
       success: false,
@@ -327,6 +687,95 @@ async function checkCheckinAchievements(openid, consecutiveDays) {
   }
 }
 
+// 获取签到状态
+async function getCheckinStatus(openid) {
+  const today = new Date()
+  const todayStr = today.toDateString()
+  
+  // 查询今日签到记录
+  const todayCheckin = await db.collection('checkins')
+    .where({
+      openid: openid,
+      checkinDate: todayStr
+    })
+    .get()
+  
+  const isCheckedIn = todayCheckin.data.length > 0
+  
+  // 查询签到统计
+  const stats = await db.collection('checkin_stats')
+    .where({ openid: openid })
+    .get()
+  
+  let consecutiveDays = 0
+  let totalDays = 0
+  
+  if (stats.data.length > 0) {
+    const currentStats = stats.data[0]
+    consecutiveDays = currentStats.consecutiveDays || 0
+    totalDays = currentStats.totalDays || 0
+    
+    // 检查连续签到是否中断
+    if (currentStats.lastCheckInDate) {
+      const lastDate = new Date(currentStats.lastCheckInDate)
+      const yesterday = new Date(today)
+      yesterday.setDate(yesterday.getDate() - 1)
+      
+      if (lastDate.toDateString() !== yesterday.toDateString() && 
+          lastDate.toDateString() !== todayStr) {
+        consecutiveDays = 0
+      }
+    }
+  }
+  
+  return {
+    success: true,
+    data: {
+      isCheckedIn: isCheckedIn,
+      consecutiveDays: consecutiveDays,
+      totalDays: totalDays
+    }
+  }
+}
+
+// 获取签到历史
+async function getCheckinHistory(openid, page = 1, limit = 20) {
+  const skip = (page - 1) * limit
+  
+  const result = await db.collection('checkins')
+    .where({ openid: openid })
+    .orderBy('checkinTime', 'desc')
+    .skip(skip)
+    .limit(limit)
+    .get()
+  
+  return {
+    success: true,
+    data: {
+      list: result.data,
+      total: result.data.length,
+      page: page,
+      limit: limit
+    }
+  }
+}
+
+// 计算签到奖励
+function calculateCheckinReward(consecutiveDays) {
+  const rewards = [
+    { day: 1, type: 'coin', amount: 50, icon: '/images/coin.png', name: '金币' },
+    { day: 2, type: 'water', amount: 3, icon: '/images/water.png', name: '水滴' },
+    { day: 3, type: 'coin', amount: 80, icon: '/images/coin.png', name: '金币' },
+    { day: 4, type: 'fertilizer', amount: 2, icon: '/images/fertilizer.png', name: '肥料' },
+    { day: 5, type: 'coin', amount: 120, icon: '/images/coin.png', name: '金币' },
+    { day: 6, type: 'water', amount: 5, icon: '/images/water.png', name: '水滴' },
+    { day: 7, type: 'special', amount: 200, icon: '/images/gift.png', name: '大礼包' }
+  ]
+  
+  const rewardIndex = ((consecutiveDays - 1) % 7)
+  return rewards[rewardIndex]
+}
+
 // 生成日历数据
 function generateCalendar(year, month, checkinRecords) {
   const firstDay = new Date(year, month - 1, 1);
@@ -393,4 +842,40 @@ function formatTimeText(date) {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
+}
+
+// 获取奖励历史
+async function getRewardHistory(openid, type, limit = 20) {
+  try {
+    const result = await db.collection('checkin_records')
+      .where({ openid })
+      .orderBy('checkinTime', 'desc')
+      .limit(limit)
+      .get();
+
+    const rewards = [];
+    result.data.forEach(checkin => {
+      if (checkin.rewards && checkin.rewards.length > 0) {
+        checkin.rewards.forEach(reward => {
+          rewards.push({
+            ...reward,
+            checkinTime: checkin.checkinTime,
+            continuousDays: checkin.continuousDays
+          });
+        });
+      }
+    });
+
+    return {
+      success: true,
+      data: rewards
+    };
+  } catch (error) {
+    console.error('获取奖励历史失败:', error);
+    return {
+      success: false,
+      message: '获取奖励历史失败',
+      error: error.message
+    };
+  }
 }

@@ -1,0 +1,9 @@
+{
+  "name": "initAddressData",
+  "version": "1.0.0",
+  "description": "初始化地址数据集合",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

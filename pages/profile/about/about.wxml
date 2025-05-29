@@ -1,0 +1,155 @@
+<!--pages/profile/about/about.wxml-->
+<view class="about-container">
+  <!-- 应用信息 -->
+  <view class="app-info-section">
+    <view class="app-header">
+      <image src="{{appInfo.logo}}" class="app-logo"></image>
+      <view class="app-details">
+        <text class="app-name">{{appInfo.name}}</text>
+        <text class="app-version">版本 {{appInfo.version}}</text>
+        <text class="app-desc">{{appInfo.description}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能特色 -->
+  <view class="features-section">
+    <view class="section-title">
+      <image src="/images/icons/star.png" class="title-icon"></image>
+      <text>功能特色</text>
+    </view>
+    <view class="features-grid">
+      <view class="feature-item" wx:for="{{features}}" wx:key="title">
+        <image src="{{item.icon}}" class="feature-icon"></image>
+        <text class="feature-title">{{item.title}}</text>
+        <text class="feature-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 公司信息 -->
+  <view class="company-section">
+    <view class="section-title">
+      <image src="/images/icons/company.png" class="title-icon"></image>
+      <text>公司信息</text>
+    </view>
+    <view class="company-card">
+      <view class="company-name">{{companyInfo.name}}</view>
+      <view class="contact-list">
+        <view class="contact-item" data-type="address" bindtap="copyContact">
+          <image src="/images/icons/location.png" class="contact-icon"></image>
+          <text class="contact-text">{{companyInfo.address}}</text>
+          <image src="/images/icons/copy.png" class="copy-icon"></image>
+        </view>
+        <view class="contact-item" data-type="phone" bindtap="makePhoneCall">
+          <image src="/images/icons/phone.png" class="contact-icon"></image>
+          <text class="contact-text">{{companyInfo.phone}}</text>
+          <image src="/images/icons/call.png" class="copy-icon"></image>
+        </view>
+        <view class="contact-item" data-type="email" bindtap="copyContact">
+          <image src="/images/icons/email.png" class="contact-icon"></image>
+          <text class="contact-text">{{companyInfo.email}}</text>
+          <image src="/images/icons/copy.png" class="copy-icon"></image>
+        </view>
+        <view class="contact-item" data-type="website" bindtap="copyContact">
+          <image src="/images/icons/web.png" class="contact-icon"></image>
+          <text class="contact-text">{{companyInfo.website}}</text>
+          <image src="/images/icons/copy.png" class="copy-icon"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 开发团队 -->
+  <view class="team-section">
+    <view class="section-title" bindtap="toggleTeam">
+      <image src="/images/icons/team.png" class="title-icon"></image>
+      <text>开发团队</text>
+      <image src="/images/icons/arrow-down.png" class="expand-icon {{showTeam ? 'expanded' : ''}}"></image>
+    </view>
+    <view class="team-content {{showTeam ? 'expanded' : ''}}">
+      <view class="team-member" wx:for="{{teamMembers}}" wx:key="name">
+        <image src="{{item.avatar}}" class="member-avatar"></image>
+        <view class="member-info">
+          <text class="member-name">{{item.name}}</text>
+          <text class="member-position">{{item.position}}</text>
+          <text class="member-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 更新日志 -->
+  <view class="updates-section">
+    <view class="section-title" bindtap="toggleUpdates">
+      <image src="/images/icons/update.png" class="title-icon"></image>
+      <text>更新日志</text>
+      <image src="/images/icons/arrow-down.png" class="expand-icon {{showUpdates ? 'expanded' : ''}}"></image>
+    </view>
+    <view class="updates-content {{showUpdates ? 'expanded' : ''}}">
+      <view class="update-item" wx:for="{{updates}}" wx:key="version">
+        <view class="update-header">
+          <text class="update-version">v{{item.version}}</text>
+          <text class="update-date">{{item.date}}</text>
+        </view>
+        <view class="update-features">
+          <view class="feature-point" wx:for="{{item.features}}" wx:key="*this" wx:for-item="feature">
+            <text class="feature-bullet">•</text>
+            <text class="feature-text">{{feature}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="actions-section">
+    <view class="action-buttons">
+      <button class="action-btn primary" bindtap="shareApp">
+        <image src="/images/icons/share.png" class="btn-icon"></image>
+        分享应用
+      </button>
+      <button class="action-btn secondary" bindtap="checkUpdate">
+        <image src="/images/icons/refresh.png" class="btn-icon"></image>
+        检查更新
+      </button>
+    </view>
+    <view class="action-buttons">
+      <button class="action-btn outline" bindtap="goToFeedback">
+        <image src="/images/icons/feedback.png" class="btn-icon"></image>
+        意见反馈
+      </button>
+      <button class="action-btn outline" bindtap="goToHelp">
+        <image src="/images/icons/help.png" class="btn-icon"></image>
+        帮助中心
+      </button>
+    </view>
+  </view>
+
+  <!-- 法律信息 -->
+  <view class="legal-section">
+    <view class="section-title">
+      <image src="/images/icons/legal.png" class="title-icon"></image>
+      <text>法律信息</text>
+    </view>
+    <view class="legal-links">
+      <view class="legal-item" bindtap="showUserAgreement">
+        <text class="legal-text">用户协议</text>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+      <view class="legal-item" bindtap="showPrivacyPolicy">
+        <text class="legal-text">隐私政策</text>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版权信息 -->
+  <view class="copyright-section">
+    <text class="copyright-text">© 2024 {{companyInfo.name}}</text>
+    <text class="copyright-desc">保留所有权利</text>
+    <view class="system-info" wx:if="{{appInfo.platform}}">
+      <text class="system-text">运行环境：{{appInfo.system}}</text>
+    </view>
+  </view>
+</view>

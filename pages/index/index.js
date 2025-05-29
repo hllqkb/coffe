@@ -25,7 +25,6 @@ Page({
   onLoad() {
     // 获取全局数据
     this.setData({
-      coffeeVarieties: app.globalData.coffeeVarieties,
       canIUseGetUserProfile: app.globalData.canIUseGetUserProfile
     })
     
@@ -63,7 +62,8 @@ Page({
         this.loadUserResources(),
         this.loadMyTrees(),
         this.loadDailyTasks(),
-        this.loadRecommendKnowledge()
+        this.loadRecommendKnowledge(),
+        this.loadCoffeeVarieties()
       ])
       
       this.setData({ loading: false })
@@ -77,30 +77,57 @@ Page({
 
   // 获取用户信息
   getUserInfo() {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       if (app.globalData.userInfo) {
         this.setData({
           userInfo: app.globalData.userInfo,
           hasUserInfo: true
         })
         resolve()
-      } else if (this.data.canIUseGetUserProfile) {
-        // 可以使用 wx.getUserProfile 获取头像昵称
-        resolve()
       } else {
-        // 在没有 open-type=getUserInfo 版本的兼容处理
-        wx.getUserInfo({
-          success: (res) => {
-            app.globalData.userInfo = res.userInfo
+        try {
+          // 从数据库获取用户信息
+          const wxContext = await wx.cloud.callFunction({
+            name: 'userLogin'
+          });
+          
+          if (wxContext.result && wxContext.result.success) {
+            const userInfo = wxContext.result.data.userInfo;
+            app.globalData.userInfo = {
+              nickName: userInfo.nickName || '咖啡爱好者',
+              avatarUrl: userInfo.avatarUrl || '/images/default-avatar.png'
+            };
             this.setData({
-              userInfo: res.userInfo,
+              userInfo: app.globalData.userInfo,
               hasUserInfo: true
-            })
-            resolve()
-          },
-          fail: () => resolve()
-        })
-      }
+            });
+            resolve();
+          } else {
+            // 如果无法获取用户信息，尝试使用 getUserProfile
+            if (this.data.canIUseGetUserProfile) {
+              // 可以使用 wx.getUserProfile 获取头像昵称
+              resolve()
+            } else {
+              // 在没有 open-type=getUserInfo 版本的兼容处理
+              wx.getUserInfo({
+                success: (res) => {
+                  app.globalData.userInfo = res.userInfo
+                  this.setData({
+                    userInfo: res.userInfo,
+                    hasUserInfo: true
+                  })
+                  resolve()
+                },
+          
+                 fail: () => resolve()
+               })
+             }
+           }
+         } catch (error) {
+           console.error('获取用户信息失败:', error);
+           resolve();
+         }
+       }
     })
   },
 
@@ -115,9 +142,9 @@ Page({
       if (res.data.length > 0) {
         const userData = res.data[0]
         this.setData({
-          waterCount: userData.waterCount || 0,
-          fertilizerCount: userData.fertilizerCount || 0,
-          coinCount: userData.coinCount || 0,
+          waterCount: userData.water || 0,
+          fertilizerCount: userData.fertilizer || 0,
+          coinCount: userData.coin || 0,
           userLevel: userData.level || 1,
           hasSelectedVariety: userData.hasSelectedVariety || false
         })
@@ -136,9 +163,9 @@ Page({
       await db.collection('users').add({
         data: {
           openid: openid,
-          waterCount: 10, // 新用户赠送10个水滴
-          fertilizerCount: 5, // 新用户赠送5个肥料
-          coinCount: 100, // 新用户赠送100金币
+          water: 10, // 新用户赠送10个水滴
+          fertilizer: 5, // 新用户赠送5个肥料
+          coin: 100, // 新用户赠送100金币
           level: 1,
           hasSelectedVariety: false,
           createTime: new Date(),
@@ -361,7 +388,7 @@ Page({
     wx.switchTab({ url: '/pages/garden/garden' })
   },
 
-  goToSignIn() {
+  goToCheckin() {
     wx.navigateTo({ url: '/pages/signin/signin' })
   },
 
@@ -385,6 +412,45 @@ Page({
     wx.navigateTo({
       url: `/pages/knowledge/knowledge?id=${knowledge.id}`
     })
+  },
+
+  // 加载咖啡品种数据
+  async loadCoffeeVarieties() {
+    try {
+      // 首先尝试初始化数据（如果数据库为空）
+      await wx.cloud.callFunction({
+        name: 'coffeeVarietyManager',
+        data: {
+          action: 'initVarieties'
+        }
+      })
+      
+      // 获取咖啡品种数据
+      const result = await wx.cloud.callFunction({
+        name: 'coffeeVarietyManager',
+        data: {
+          action: 'getVarieties'
+        }
+      })
+      
+      if (result.result.success) {
+        this.setData({
+          coffeeVarieties: result.result.data
+        })
+      } else {
+        // 如果云函数调用失败，使用本地备用数据
+        console.warn('加载咖啡品种失败，使用备用数据:', result.result.message)
+        this.setData({
+          coffeeVarieties: app.globalData.coffeeVarieties
+        })
+      }
+    } catch (error) {
+      console.error('加载咖啡品种失败:', error)
+      // 使用本地备用数据
+      this.setData({
+        coffeeVarieties: app.globalData.coffeeVarieties
+      })
+    }
   },
 
   // 分享应用

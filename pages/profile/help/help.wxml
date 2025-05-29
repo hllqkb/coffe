@@ -1,0 +1,123 @@
+<!--pages/profile/help/help.wxml-->
+<view class="help-container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">帮助中心</text>
+    <text class="page-subtitle">为您解答使用过程中的疑问</text>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-section">
+    <view class="search-box">
+      <image src="/images/icons/search.png" class="search-icon"></image>
+      <input 
+        class="search-input"
+        placeholder="搜索问题关键词"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+      />
+      <view class="clear-btn" wx:if="{{searchKeyword}}" bindtap="clearSearch">
+        <image src="/images/icons/close.png" class="clear-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类选择 -->
+  <view class="category-section">
+    <scroll-view class="category-scroll" scroll-x="true">
+      <view class="category-list">
+        <view 
+          class="category-item {{selectedCategory === item.id ? 'active' : ''}}"
+          wx:for="{{categories}}"
+          wx:key="id"
+          data-category="{{item.id}}"
+          bindtap="selectCategory"
+        >
+          <image src="{{item.icon}}" class="category-icon"></image>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 帮助列表 -->
+  <view class="help-list">
+    <view 
+      class="help-item"
+      wx:for="{{filteredItems}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="toggleAnswer"
+    >
+      <view class="question-section">
+        <view class="question-content">
+          <text class="question-text">{{item.question}}</text>
+          <view class="question-meta">
+            <view class="tags">
+              <text class="tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+            </view>
+            <view class="views">
+              <image src="/images/icons/eye.png" class="eye-icon"></image>
+              <text class="view-count">{{item.views}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="expand-icon {{expandedItems.indexOf(item.id) > -1 ? 'expanded' : ''}}">
+          <image src="/images/icons/arrow-down.png" class="arrow-icon"></image>
+        </view>
+      </view>
+      
+      <view class="answer-section {{expandedItems.indexOf(item.id) > -1 ? 'expanded' : ''}}">
+        <view class="answer-content">
+          <text class="answer-text">{{item.answer}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{filteredItems.length === 0}}">
+    <image src="/images/empty/no-results.png" class="empty-image"></image>
+    <text class="empty-text">没有找到相关问题</text>
+    <text class="empty-desc">试试其他关键词或联系客服</text>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-actions">
+    <view class="action-card">
+      <view class="action-title">没有找到答案？</view>
+      <view class="action-buttons">
+        <button class="action-btn primary" bindtap="contactService">
+          <image src="/images/icons/service.png" class="btn-icon"></image>
+          联系客服
+        </button>
+        <button class="action-btn secondary" bindtap="goToFeedback">
+          <image src="/images/icons/feedback.png" class="btn-icon"></image>
+          意见反馈
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常用联系方式 -->
+  <view class="contact-info">
+    <view class="contact-title">
+      <image src="/images/icons/phone.png" class="contact-icon"></image>
+      <text>联系我们</text>
+    </view>
+    <view class="contact-list">
+      <view class="contact-item">
+        <text class="contact-label">客服电话：</text>
+        <text class="contact-value">400-123-4567</text>
+      </view>
+      <view class="contact-item">
+        <text class="contact-label">客服邮箱：</text>
+        <text class="contact-value">service@coffee.com</text>
+      </view>
+      <view class="contact-item">
+        <text class="contact-label">工作时间：</text>
+        <text class="contact-value">9:00-18:00</text>
+      </view>
+    </view>
+  </view>
+</view>

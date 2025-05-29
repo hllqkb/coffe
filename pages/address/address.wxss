@@ -1,0 +1,230 @@
+/* 地址管理页面样式 */
+.address-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding-bottom: 200rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  text-align: center;
+}
+
+.empty-image {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 40rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 地址列表 */
+.address-list {
+  padding: 20rpx;
+}
+
+.address-item {
+  background-color: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+
+/* 选择指示器 */
+.select-indicator {
+  margin-right: 20rpx;
+  padding-top: 8rpx;
+}
+
+.radio {
+  width: 32rpx;
+  height: 32rpx;
+  border: 2rpx solid #ddd;
+  border-radius: 50%;
+  position: relative;
+}
+
+.radio.checked {
+  border-color: #4CAF50;
+}
+
+.radio.checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16rpx;
+  height: 16rpx;
+  background-color: #4CAF50;
+  border-radius: 50%;
+}
+
+/* 地址信息 */
+.address-info {
+  flex: 1;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+  flex-wrap: wrap;
+}
+
+.contact-name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+  margin-right: 24rpx;
+}
+
+.contact-phone {
+  font-size: 28rpx;
+  color: #666;
+  margin-right: 16rpx;
+}
+
+.default-badge {
+  background-color: #4CAF50;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  margin-left: auto;
+}
+
+.address-detail {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 16rpx;
+}
+
+.address-tags {
+  display: flex;
+  align-items: center;
+}
+
+.address-tag {
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+  margin-right: 12rpx;
+}
+
+/* 操作按钮 */
+.address-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-left: 20rpx;
+}
+
+.action-btn {
+  padding: 12rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  border: 1rpx solid #ddd;
+  background-color: #fff;
+  color: #666;
+  min-width: 120rpx;
+  text-align: center;
+}
+
+.action-btn:first-child {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+  color: #fff;
+}
+
+.delete-btn {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+/* 底部操作区 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  padding: 20rpx;
+  border-top: 1rpx solid #eee;
+  display: flex;
+  gap: 20rpx;
+  z-index: 100;
+}
+
+.location-btn,
+.add-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  border: none;
+}
+
+.location-btn {
+  background-color: #f8f8f8;
+  color: #666;
+}
+
+.add-btn {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.location-btn image,
+.add-btn image {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 12rpx;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 选择模式下的样式调整 */
+.address-item[data-select-mode="true"] {
+  cursor: pointer;
+}
+
+.address-item[data-select-mode="true"]:active {
+  background-color: #f5f5f5;
+}

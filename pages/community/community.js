@@ -13,6 +13,9 @@ Page({
     publishImages: [],
     publishVideo: '',
     publishing: false,
+    // 编辑相关
+    isEditing: false,
+    editingPostId: null,
     // 用户信息
     userInfo: null,
     // 搜索相关
@@ -42,6 +45,21 @@ Page({
       const userInfo = wx.getStorageSync('userInfo');
       if (userInfo) {
         this.setData({ userInfo });
+      }
+      
+      // 获取当前用户的openid
+      const loginResult = await wx.cloud.callFunction({
+        name: 'userLogin',
+        data: {}
+      });
+      
+      if (loginResult.result && loginResult.result.openid) {
+        this.setData({
+          userInfo: {
+            ...this.data.userInfo,
+            openid: loginResult.result.openid
+          }
+        });
       }
     } catch (error) {
       console.error('加载用户信息失败:', error);
@@ -118,15 +136,11 @@ Page({
       const postId = (page - 1) * 10 + i + 1;
       
       const imageOptions = [
-        [],
-        ['/images/arabica.png'],
-        ['/images/robusta.png'],
-        ['/images/stage-mature.png'],
-        ['/images/stage-fruit.png'],
-        ['/images/stage-seedling.png'],
-        ['/images/stage-sprout.png'],
-        ['/images/arabica.png', '/images/robusta.png'],
-        ['/images/stage-mature.png', '/images/stage-fruit.png']
+        ['https://636c-cloudbase-baas-1gxfaf005a0cf6e-1332411272.tcb.qcloud.la/community/images/coffee-community-1.jpg'],
+        ['https://636c-cloudbase-baas-1gxfaf005a0cf6e-1332411272.tcb.qcloud.la/community/images/coffee-beans.png', 'https://636c-cloudbase-baas-1gxfaf005a0cf6e-1332411272.tcb.qcloud.la/community/images/arabica.png'],
+        ['https://636c-cloudbase-baas-1gxfaf005a0cf6e-1332411272.tcb.qcloud.la/community/images/blue-mountain.png'],
+        ['https://636c-cloudbase-baas-1gxfaf005a0cf6e-1332411272.tcb.qcloud.la/community/images/geisha.png', 'https://636c-cloudbase-baas-1gxfaf005a0cf6e-1332411272.tcb.qcloud.la/community/images/robusta.png'],
+        []
       ];
       
       posts.push({
@@ -134,7 +148,7 @@ Page({
         user: user,
         content: `这是第${postId}条帖子的内容，分享我的咖啡种植心得和经验。今天的咖啡树长得特别好，叶子绿油油的，看起来很健康！`,
         images: imageOptions[i % imageOptions.length],
-        video: i % 8 === 0 ? 'https://example.com/sample-video.mp4' : '',
+        video: i % 8 === 0 ? 'https://636c-cloudbase-baas-1gxfaf005a0cf6e-1332411272.tcb.qcloud.la/community/videos/sample-video.mp4' : '',
         createTime: new Date(Date.now() - i * 3600000).toISOString(),
         likeCount: Math.floor(Math.random() * 100),
         commentCount: Math.floor(Math.random() * 50),
@@ -176,7 +190,9 @@ Page({
       showPublishModal: false,
       publishContent: '',
       publishImages: [],
-      publishVideo: ''
+      publishVideo: '',
+      isEditing: false,
+      editingPostId: null
     });
   },
   
@@ -202,12 +218,31 @@ Page({
         sourceType: ['album', 'camera']
       });
       
-      const newImages = res.tempFiles.map(file => file.tempFilePath);
-      const publishImages = [...this.data.publishImages, ...newImages];
+      wx.showLoading({
+        title: '上传中...'
+      });
+      
+      const uploadPromises = res.tempFiles.map(async (file) => {
+        const cloudPath = `community/images/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
+        const uploadResult = await wx.cloud.uploadFile({
+          cloudPath,
+          filePath: file.tempFilePath
+        });
+        return uploadResult.fileID;
+      });
+      
+      const cloudFileIDs = await Promise.all(uploadPromises);
+      const publishImages = [...this.data.publishImages, ...cloudFileIDs];
       
       this.setData({ publishImages });
+      wx.hideLoading();
     } catch (error) {
       console.error('选择图片失败:', error);
+      wx.hideLoading();
+      wx.showToast({
+        title: '图片上传失败',
+        icon: 'none'
+      });
     }
   },
 
@@ -220,12 +255,30 @@ Page({
         sourceType: ['album', 'camera']
       });
       
+      wx.showLoading({
+        title: '视频上传中...'
+      });
+      
+      const videoFile = res.tempFiles[0];
+      const cloudPath = `community/videos/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.mp4`;
+      const uploadResult = await wx.cloud.uploadFile({
+        cloudPath,
+        filePath: videoFile.tempFilePath
+      });
+      
       this.setData({
-        publishVideo: res.tempFiles[0].tempFilePath,
+        publishVideo: uploadResult.fileID,
         publishImages: [] // 选择视频后清空图片
       });
+      
+      wx.hideLoading();
     } catch (error) {
       console.error('选择视频失败:', error);
+      wx.hideLoading();
+      wx.showToast({
+        title: '视频上传失败',
+        icon: 'none'
+      });
     }
   },
 
@@ -243,9 +296,9 @@ Page({
 
   // 发布帖子
   async publishPost() {
-    const { publishContent, publishImages, publishVideo, userInfo } = this.data;
+    const { publishContent, publishImages, publishVideo, isEditing, editingPostId } = this.data;
     
-    if (!publishContent || publishContent.length === 0) {
+    if (!publishContent.trim()) {
       wx.showToast({
         title: '请输入内容',
         icon: 'none'
@@ -256,45 +309,51 @@ Page({
     this.setData({ publishing: true });
     
     try {
+      const action = isEditing ? 'updatePost' : 'createPost';
+      const data = {
+        action,
+        content: publishContent.trim(),
+        images: publishImages,
+        video: publishVideo
+      };
+      
+      if (isEditing) {
+        data.postId = editingPostId;
+      }
+      
       const result = await wx.cloud.callFunction({
         name: 'communityManager',
-        data: {
-          action: 'createPost',
-          content: publishContent,
-          images: publishImages,
-          video: publishVideo,
-          userInfo: userInfo || {
-            nickName: '匿名用户',
-            avatarUrl: '/images/default-avatar.png'
-          }
-        }
+        data
       });
       
       if (result.result.success) {
-        // 先关闭弹窗，再显示成功提示
-        this.setData({
-          showPublishModal: false,
-          publishContent: '',
-          publishImages: [],
-          publishVideo: ''
-        });
-        
         wx.showToast({
-          title: '发布成功',
+          title: isEditing ? '更新成功' : '发布成功',
           icon: 'success'
         });
         
+        // 清空表单
+        this.setData({
+          publishContent: '',
+          publishImages: [],
+          publishVideo: '',
+          showPublishModal: false,
+          isEditing: false,
+          editingPostId: null
+        });
+        
+        // 刷新帖子列表
         this.refreshPosts();
       } else {
         wx.showToast({
-          title: result.result.message || '发布失败',
+          title: result.result.message || (isEditing ? '更新失败' : '发布失败'),
           icon: 'none'
         });
       }
     } catch (error) {
-      console.error('发布失败:', error);
+      console.error(isEditing ? '更新帖子失败:' : '发布帖子失败:', error);
       wx.showToast({
-        title: '发布失败，请重试',
+        title: isEditing ? '更新失败，请重试' : '发布失败，请重试',
         icon: 'none'
       });
     } finally {
@@ -513,6 +572,85 @@ Page({
     
     // 保存用户偏好
     wx.setStorageSync('layoutMode', mode);
+  },
+
+  // 删除帖子
+  async deletePost(e) {
+    const postId = e.currentTarget.dataset.id;
+    
+    // 确认删除
+    const confirmResult = await new Promise((resolve) => {
+      wx.showModal({
+        title: '确认删除',
+        content: '确定要删除这条帖子吗？删除后无法恢复。',
+        confirmText: '删除',
+        confirmColor: '#ff4757',
+        success: (res) => {
+          resolve(res.confirm);
+        }
+      });
+    });
+    
+    if (!confirmResult) return;
+    
+    try {
+      wx.showLoading({ title: '删除中...' });
+      
+      const deleteResult = await wx.cloud.callFunction({
+        name: 'communityManager',
+        data: {
+          action: 'deletePost',
+          postId
+        }
+      });
+      
+      if (deleteResult.result.success) {
+        wx.showToast({
+          title: '删除成功',
+          icon: 'success'
+        });
+        
+        // 刷新帖子列表
+        this.refreshPosts();
+      } else {
+        wx.showToast({
+          title: deleteResult.result.message || '删除失败',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
+      console.error('删除帖子失败:', error);
+      wx.showToast({
+        title: '删除失败，请重试',
+        icon: 'none'
+      });
+    } finally {
+      wx.hideLoading();
+    }
+  },
+
+  // 编辑帖子
+  editPost(e) {
+    const postId = e.currentTarget.dataset.id;
+    const post = this.data.posts.find(p => p.id === postId);
+    
+    if (!post) {
+      wx.showToast({
+        title: '帖子不存在',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 设置编辑数据
+    this.setData({
+      editingPostId: postId,
+      publishContent: post.content,
+      publishImages: post.images || [],
+      publishVideo: post.video || '',
+      showPublishModal: true,
+      isEditing: true
+    });
   },
 
   // 页面分享

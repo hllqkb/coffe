@@ -39,7 +39,7 @@
       <image src="/images/garden-icon.png"></image>
       <text>我的庄园</text>
     </view>
-    <view class="action-btn" bindtap="goToSignIn">
+    <view class="action-btn" bindtap="goToCheckin">
       <image src="/images/signin-icon.png"></image>
       <text>每日签到</text>
     </view>

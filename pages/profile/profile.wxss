@@ -287,25 +287,57 @@
   color: #999;
 }
 
+/* 订单快捷入口 */
+.order-shortcuts {
+  margin: 20rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+}
+
+.shortcuts-grid {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20rpx;
+}
+
+.shortcut-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 20rpx 10rpx;
+}
+
+.shortcut-item image {
+  width: 50rpx;
+  height: 50rpx;
+  margin-bottom: 10rpx;
+}
+
+.shortcut-item text {
+  font-size: 24rpx;
+  color: #666;
+}
+
 /* 功能菜单 */
 .menu-section {
-  margin: 0 30rpx 30rpx;
+  margin: 20rpx;
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
 }
 
 .menu-group {
-  background: white;
-  border-radius: 20rpx;
-  margin-bottom: 20rpx;
-  overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  padding: 0;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
   padding: 30rpx;
-  border-bottom: 1rpx solid #f8f9fa;
-  position: relative;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background-color 0.3s;
 }
 
 .menu-item:last-child {
@@ -313,49 +345,39 @@
 }
 
 .menu-item:active {
-  background: #f8f9fa;
+  background-color: #f8f8f8;
 }
 
 .menu-icon {
   width: 50rpx;
   height: 50rpx;
-  margin-right: 30rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-right: 20rpx;
 }
 
 .menu-icon image {
-  width: 40rpx;
-  height: 40rpx;
+  width: 100%;
+  height: 100%;
 }
 
-.menu-text {
+.menu-info {
   flex: 1;
-  font-size: 30rpx;
-  color: #333;
 }
 
-.menu-badge {
-  background: #ff4757;
-  color: white;
-  font-size: 20rpx;
-  padding: 4rpx 8rpx;
-  border-radius: 10rpx;
-  margin-right: 20rpx;
-  min-width: 32rpx;
-  text-align: center;
+.menu-title {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.menu-desc {
+  font-size: 24rpx;
+  color: #999;
 }
 
 .menu-arrow {
   width: 30rpx;
   height: 30rpx;
-}
-
-.menu-arrow image {
-  width: 100%;
-  height: 100%;
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
 /* 版本信息 */

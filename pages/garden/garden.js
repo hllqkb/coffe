@@ -66,9 +66,9 @@ Page({
       if (res.data.length > 0) {
         const userData = res.data[0]
         this.setData({
-          waterCount: userData.waterCount || 0,
-          fertilizerCount: userData.fertilizerCount || 0,
-          coinCount: userData.coinCount || 0
+          waterCount: userData.water || 0,
+          fertilizerCount: userData.fertilizer || 0,
+          coinCount: userData.coin || 0
         })
       }
     } catch (error) {
@@ -79,37 +79,46 @@ Page({
   // 加载我的咖啡树
   async loadMyTrees() {
     try {
-      const openid = await app.getOpenId()
-      const res = await db.collection('coffee_trees').where({
-        openid: openid
-      }).orderBy('createTime', 'desc').get()
+      // 使用云函数获取咖啡树数据
+      const result = await wx.cloud.callFunction({
+        name: 'treeManager',
+        data: {
+          action: 'getMyTrees'
+        }
+      })
       
-      // 为每棵树加载照片
-      const treesWithPhotos = await Promise.all(
-        res.data.map(async tree => {
-          const processedTree = this.processTreeData(tree)
-          // 加载该树的最新照片
-          try {
-            const photoRes = await db.collection('tree_photos').where({
-              treeId: tree._id
-            }).orderBy('uploadTime', 'desc').limit(1).get()
-            
-            if (photoRes.data.length > 0) {
-              processedTree.latestPhoto = photoRes.data[0].photoUrl
-              processedTree.hasPhoto = true
-            } else {
-              processedTree.hasPhoto = false
+      if (result.result.success) {
+        const trees = result.result.data
+        
+        // 为每棵树加载照片
+        const treesWithPhotos = await Promise.all(
+          trees.map(async tree => {
+            // 加载该树的最新照片
+            try {
+              const photoRes = await db.collection('tree_photos').where({
+                treeId: tree._id
+              }).orderBy('uploadTime', 'desc').limit(1).get()
+              
+              if (photoRes.data.length > 0) {
+                tree.latestPhoto = photoRes.data[0].photoUrl
+                tree.hasPhoto = true
+              } else {
+                tree.hasPhoto = false
+              }
+            } catch (photoError) {
+              console.error('加载咖啡树照片失败:', photoError)
+              tree.hasPhoto = false
             }
-          } catch (photoError) {
-            console.error('加载咖啡树照片失败:', photoError)
-            processedTree.hasPhoto = false
-          }
-          
-          return processedTree
-        })
-      )
-      
-      this.setData({ myTrees: treesWithPhotos })
+            
+            return tree
+          })
+        )
+        
+        this.setData({ myTrees: treesWithPhotos })
+      } else {
+        console.error('加载咖啡树失败:', result.result.message)
+        this.setData({ myTrees: [] })
+      }
     } catch (error) {
       console.error('加载咖啡树失败:', error)
     }
@@ -437,110 +446,132 @@ Page({
 
   // 执行浇水
   async performWater(tree) {
-    const openid = await app.getOpenId()
-    
-    // 更新咖啡树
-    await db.collection('coffee_trees').doc(tree._id).update({
-      data: {
-        lastWatered: new Date(),
-        waterCount: (tree.waterCount || 0) + 1
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'treeManager',
+        data: {
+          action: 'waterTree',
+          treeId: tree._id
+        }
+      })
+      
+      if (result.result.success) {
+        // 更新本地资源数据
+        this.setData({
+          waterCount: this.data.waterCount - 1
+        })
+        
+        wx.showToast({ 
+          title: result.result.message, 
+          icon: 'success' 
+        })
+        
+        // 显示获得的经验和健康度
+        if (result.result.data) {
+          setTimeout(() => {
+            wx.showToast({
+              title: `获得经验+${result.result.data.experience} 健康+${result.result.data.health}`,
+              icon: 'none',
+              duration: 2000
+            })
+          }, 1500)
+        }
+      } else {
+        wx.showToast({ 
+          title: result.result.message, 
+          icon: 'none' 
+        })
       }
-    })
-    
-    // 扣除用户水滴
-    await db.collection('users').where({
-      openid: openid
-    }).update({
-      data: {
-        waterCount: this.data.waterCount - 1
-      }
-    })
-    
-    wx.showToast({ title: '浇水成功', icon: 'success' })
+    } catch (error) {
+      console.error('浇水失败:', error)
+      wx.showToast({ title: '浇水失败', icon: 'none' })
+    }
   },
 
   // 执行施肥
   async performFertilize(tree) {
-    const openid = await app.getOpenId()
-    
-    // 更新咖啡树
-    await db.collection('coffee_trees').doc(tree._id).update({
-      data: {
-        lastFertilized: new Date(),
-        fertilizerCount: (tree.fertilizerCount || 0) + 1
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'treeManager',
+        data: {
+          action: 'fertilizeTree',
+          treeId: tree._id
+        }
+      })
+      
+      if (result.result.success) {
+        // 更新本地资源数据
+        this.setData({
+          fertilizerCount: this.data.fertilizerCount - 1
+        })
+        
+        wx.showToast({ 
+          title: result.result.message, 
+          icon: 'success' 
+        })
+        
+        // 显示获得的经验和健康度
+        if (result.result.data) {
+          setTimeout(() => {
+            wx.showToast({
+              title: `获得经验+${result.result.data.experience} 健康+${result.result.data.health}`,
+              icon: 'none',
+              duration: 2000
+            })
+          }, 1500)
+        }
+      } else {
+        wx.showToast({ 
+          title: result.result.message, 
+          icon: 'none' 
+        })
       }
-    })
-    
-    // 扣除用户肥料
-    await db.collection('users').where({
-      openid: openid
-    }).update({
-      data: {
-        fertilizerCount: this.data.fertilizerCount - 1
-      }
-    })
-    
-    wx.showToast({ title: '施肥成功', icon: 'success' })
+    } catch (error) {
+      console.error('施肥失败:', error)
+      wx.showToast({ title: '施肥失败', icon: 'none' })
+    }
   },
 
   // 执行收获
   async performHarvest(tree) {
-    const openid = await app.getOpenId()
-    const variety = app.globalData.coffeeVarieties.find(v => v.id === tree.varietyId)
-    
-    // 计算收获奖励
-    const harvestResult = this.calculateHarvestReward(tree, variety)
-    
-    // 更新咖啡树状态
-    await db.collection('coffee_trees').doc(tree._id).update({
-      data: {
-        isHarvested: true,
-        harvestTime: new Date(),
-        harvestAmount: harvestResult.amount,
-        harvestQuality: harvestResult.quality
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'treeManager',
+        data: {
+          action: 'harvestTree',
+          treeId: tree._id
+        }
+      })
+      
+      if (result.result.success) {
+        const harvestResult = result.result.data
+        
+        // 更新本地资源数据
+        this.setData({
+          coinCount: this.data.coinCount + harvestResult.coins,
+          harvestedCount: this.data.harvestedCount + 1
+        })
+        
+        // 显示收获弹窗
+        this.setData({
+          showHarvestModal: true,
+          harvestResult: harvestResult
+        })
+        
+        wx.showToast({ 
+          title: result.result.message, 
+          icon: 'success' 
+        })
+      } else {
+        wx.showToast({ 
+          title: result.result.message, 
+          icon: 'none' 
+        })
       }
-    })
-    
-    // 添加收获记录
-    await db.collection('harvests').add({
-      data: {
-        openid: openid,
-        treeId: tree._id,
-        varietyId: tree.varietyId,
-        varietyName: tree.varietyName,
-        amount: harvestResult.amount,
-        quality: harvestResult.quality,
-        rewards: harvestResult.rewards,
-        harvestTime: new Date()
-      }
-    })
-    
-    // 更新用户资源
-    const updateData = {}
-    harvestResult.rewards.forEach(reward => {
-      if (reward.type === 'coin') {
-        updateData.coinCount = this.data.coinCount + reward.amount
-      } else if (reward.type === 'water') {
-        updateData.waterCount = this.data.waterCount + reward.amount
-      } else if (reward.type === 'fertilizer') {
-        updateData.fertilizerCount = this.data.fertilizerCount + reward.amount
-      }
-    })
-    
-    await db.collection('users').where({
-      openid: openid
-    }).update({
-      data: updateData
-    })
-    
-    // 显示收获结果
-    this.setData({
-      showHarvestModal: true,
-      harvestResult: {
-        ...harvestResult,
-        varietyName: tree.varietyName
-      }
-    })
+    } catch (error) {
+      console.error('收获失败:', error)
+      wx.showToast({ title: '收获失败', icon: 'none' })
+    }
   },
 
   // 计算收获奖励

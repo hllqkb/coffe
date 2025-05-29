@@ -133,7 +133,19 @@
             <text class="action-text">分享</text>
           </view>
           
-          <view class="action-item more-btn">
+          <!-- 删除按钮，只对当前用户的帖子显示 -->
+          <view class="action-item delete-btn" wx:if="{{(item.author && item.author.openid === userInfo.openid) || (item.user && item.user.openid === userInfo.openid)}}" data-id="{{item.id}}" catchtap="deletePost">
+            <image class="action-icon" src="/images/icons/all.png"></image>
+            <text class="action-text">删除</text>
+          </view>
+          
+          <!-- 编辑按钮，只对当前用户的帖子显示 -->
+          <view class="action-item edit-btn" wx:if="{{(item.author && item.author.openid === userInfo.openid) || (item.user && item.user.openid === userInfo.openid)}}" data-id="{{item.id}}" catchtap="editPost">
+            <image class="action-icon" src="/images/icons/edit.png"></image>
+            <text class="action-text">编辑</text>
+          </view>
+          
+          <view class="action-item more-btn" wx:else>
             <image class="action-icon" src="/images/icons/all.png"></image>
           </view>
         </view>
@@ -164,7 +176,7 @@
     <view class="modal-content" catchtap="stopPropagation">
       <!-- 模态框头部 -->
       <view class="modal-header">
-        <text class="modal-title">发布帖子</text>
+        <text class="modal-title">{{isEditing ? '编辑帖子' : '发布帖子'}}</text>
         <view class="close-btn" catchtap="hidePublishModal">×</view>
       </view>
 
@@ -228,7 +240,7 @@
           disabled="{{!publishContent || publishContent.length === 0 || publishing}}"
           loading="{{publishing}}"
         >
-          {{publishing ? '发布中...' : '发布'}}
+          {{publishing ? '发布中...' : (isEditing ? '更新' : '发布')}}
         </button>
       </view>
     </view>

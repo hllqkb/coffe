@@ -93,27 +93,45 @@
     </scroll-view>
   </view>
 
+  <!-- 订单快捷入口 -->
+  <view class="order-shortcuts">
+    <view class="section-title">我的订单</view>
+    <view class="shortcuts-grid">
+      <view class="shortcut-item" bindtap="navigateToOrdersByStatus" data-status="pending">
+        <image src="/images/icons/pending.png"></image>
+        <text>待付款</text>
+      </view>
+      <view class="shortcut-item" bindtap="navigateToOrdersByStatus" data-status="paid">
+        <image src="/images/icons/paid.png"></image>
+        <text>已付款</text>
+      </view>
+      <view class="shortcut-item" bindtap="navigateToOrdersByStatus" data-status="shipped">
+        <image src="/images/icons/shipped.png"></image>
+        <text>已发货</text>
+      </view>
+      <view class="shortcut-item" bindtap="navigateToOrdersByStatus" data-status="delivered">
+        <image src="/images/icons/delivered.png"></image>
+        <text>已送达</text>
+      </view>
+      <view class="shortcut-item" bindtap="navigateToOrders">
+        <image src="/images/icons/all-orders.png"></image>
+        <text>全部订单</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 功能菜单 -->
   <view class="menu-section">
     <view class="menu-group">
-      <view class="menu-item" bindtap="navigateToOrders">
-        <view class="menu-icon">
-          <image src="/images/icons/order.png"></image>
-        </view>
-        <view class="menu-text">我的订单</view>
-        <view class="menu-arrow">
-          <image src="/images/icons/arrow-right.png"></image>
-        </view>
-      </view>
-      
       <view class="menu-item" bindtap="navigateToAddress">
         <view class="menu-icon">
           <image src="/images/icons/address.png"></image>
         </view>
-        <view class="menu-text">收货地址</view>
-        <view class="menu-arrow">
-          <image src="/images/icons/arrow-right.png"></image>
+        <view class="menu-info">
+          <view class="menu-title">收货地址</view>
+          <view class="menu-desc">管理收货地址</view>
         </view>
+        <image class="menu-arrow" src="/images/icons/arrow-right.png"></image>
       </view>
       
       <view class="menu-item" bindtap="navigateToInvite">
@@ -188,12 +206,12 @@
 </view>
 
 <!-- 编辑资料模态框 -->
-<view class="modal-overlay" wx:if="{{showEditModal}}" bindtap="closeEditModal">
+<view class="modal-overlay" wx:if="{{showEditModal}}" bindtap="saveProfileOnModalClose">
   <view class="edit-modal" catchtap="stopPropagation">
     <view class="modal-header">
       <view class="modal-title">编辑资料</view>
       <view class="modal-close" bindtap="closeEditModal">
-        <image src="/images/icons/close.png"></image>
+        <text style="font-size: 32rpx; color: #666;">✕</text>
       </view>
     </view>
     
@@ -203,7 +221,7 @@
         <view class="avatar-upload" bindtap="chooseAvatar">
           <image class="upload-avatar" src="{{editForm.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
           <view class="upload-overlay">
-            <image src="/images/icons/camera.png"></image>
+            
           </view>
         </view>
       </view>
@@ -232,7 +250,7 @@
     <view class="modal-header">
       <view class="modal-title">成就详情</view>
       <view class="modal-close" bindtap="closeAchievementModal">
-        <image src="/images/icons/close.png"></image>
+        <text style="font-size: 32rpx; color: #666;">✕</text>
       </view>
     </view>
     

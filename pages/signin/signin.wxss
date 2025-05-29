@@ -1,0 +1,828 @@
+/* 签到页面样式 */
+.checkin-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  color: white;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 顶部区域 */
+.header-section {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  border-radius: 0 0 30px 30px;
+}
+
+.header-bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
+  padding: 60px 30px 30px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  margin-right: 16px;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.nickname {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 8px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.checkin-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkin-stats text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.total-days {
+  align-self: flex-end;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+/* 日历区域 */
+.calendar-section {
+  margin: 20px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.month-switcher {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.month-switcher:active {
+  background: #e9ecef;
+  transform: scale(0.95);
+}
+
+.month-switcher image {
+  width: 20px;
+  height: 20px;
+}
+
+.current-month {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.weekdays {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.weekday {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  padding: 10px 0;
+}
+
+.calendar-days {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.calendar-day {
+  width: calc(100% / 7);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.calendar-day.disabled {
+  opacity: 0.3;
+}
+
+.calendar-day.today {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.calendar-day.checked {
+  background: linear-gradient(135deg, #56ab2f, #a8e6cf);
+  color: white;
+  font-weight: bold;
+}
+
+.calendar-day.checked.today {
+  background: linear-gradient(135deg, #ff6b6b, #ffa726);
+}
+
+.day-number {
+  font-size: 16px;
+  z-index: 2;
+}
+
+.checked-marker {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* 操作区域 */
+.action-section {
+  margin: 20px;
+  text-align: center;
+}
+
+.checkin-btn {
+  width: 200px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.checkin-btn:not([disabled]):active {
+  transform: translateY(2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.checkin-btn.checked {
+  background: linear-gradient(135deg, #a8e6cf, #56ab2f);
+  box-shadow: 0 8px 24px rgba(86, 171, 47, 0.3);
+}
+
+.checkin-btn.checking {
+  background: linear-gradient(135deg, #ffa726, #ff7043);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.today-reward, .streak-rewards {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.today-reward text, .streak-rewards text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.reward-item {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.reward-item image {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.reward-item text {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+/* 信息区域 */
+.info-section {
+  margin: 20px;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.info-tab {
+  display: flex;
+  background: #f8f9fa;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 16px;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #667eea;
+  background: white;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 2px;
+}
+
+.tab-content {
+  padding: 20px;
+  min-height: 200px;
+}
+
+/* 规则列表 */
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rule-item {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+}
+
+.rule-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.rule-description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 历史记录 */
+.history-scroll {
+  max-height: 300px;
+}
+
+.history-list, .reward-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item, .reward-history-item {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-date {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.history-rewards {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-rewards text {
+  font-size: 12px;
+  color: #666;
+}
+
+.reward-tag {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.history-streak {
+  font-size: 12px;
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.reward-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.reward-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+}
+
+.reward-details {
+  flex: 1;
+}
+
+.reward-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.reward-source {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.reward-amount {
+  font-size: 16px;
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.reward-amount.coupon {
+  color: #ff9800;
+}
+
+.reward-time {
+  font-size: 12px;
+  color: #999;
+  margin-left: 12px;
+}
+
+.empty-history {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.empty-history image {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.view-all-history {
+  text-align: center;
+  padding: 16px;
+  color: #667eea;
+  font-size: 14px;
+  border-top: 1px solid #eee;
+  margin-top: 16px;
+}
+
+/* 成功模态框 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  width: 320px;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+  transform: scale(1);
+}
+
+.modal-bg {
+  width: 100%;
+  height: 200px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.modal-header {
+  position: relative;
+  z-index: 2;
+  padding: 30px 20px 20px;
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.modal-body {
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.rewards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.rewards-list .reward-item {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.reward-text {
+  flex: 1;
+  margin-left: 8px;
+}
+
+.reward-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.reward-amount {
+  font-size: 16px;
+  color: #4caf50;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.streak-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.streak-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.streak-info text {
+  font-size: 14px;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px 20px;
+}
+
+.share-btn, .confirm-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+}
+
+.share-btn {
+  background: #f8f9fa;
+  color: #666;
+}
+
+.confirm-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+/* 每日任务区域 */
+.daily-tasks-section {
+  margin: 20px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 2px;
+  margin-right: 12px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.task-item.completed {
+  background: #e8f5e8;
+  border: 1px solid #4caf50;
+}
+
+.task-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-icon image {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.task-info {
+  flex: 1;
+}
+
+.task-title {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.task-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.task-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #4caf50, #8bc34a);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #666;
+  min-width: 50px;
+  text-align: right;
+}
+
+.task-reward {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.task-reward image {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+}
+
+.task-reward text {
+  font-size: 14px;
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.task-status {
+  margin-left: 12px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.task-status.completed {
+  background: #4caf50;
+  color: white;
+}
+
+.task-status.available {
+  background: #667eea;
+  color: white;
+}
+
+.task-status.locked {
+  background: #e0e0e0;
+  color: #999;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .header-content {
+    padding: 50px 20px 20px;
+  }
+  
+  .calendar-section, .action-section, .info-section, .daily-tasks-section {
+    margin: 15px;
+  }
+  
+  .checkin-btn {
+    width: 180px;
+    height: 50px;
+    font-size: 16px;
+  }
+  
+  .modal-content {
+    width: 280px;
+  }
+}

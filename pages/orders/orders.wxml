@@ -1,0 +1,123 @@
+<!--订单页面-->
+<view class="orders-container">
+  <!-- 状态筛选标签 -->
+  <view class="status-tabs">
+    <scroll-view class="tabs-scroll" scroll-x="true">
+      <view class="tab-item {{activeStatus === item.id ? 'active' : ''}}" 
+            wx:for="{{statusTabs}}" 
+            wx:key="id"
+            bindtap="onStatusChange"
+            data-status="{{item.id}}">
+        <text class="tab-name">{{item.name}}</text>
+        <text class="tab-count" wx:if="{{item.count > 0}}">({{item.count}})</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="orders-list">
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{filteredOrders.length === 0 && !loading}}">
+      <image src="/images/empty-orders.png" class="empty-image"></image>
+      <text class="empty-text">暂无订单</text>
+      <text class="empty-desc">去商店看看有什么好东西吧</text>
+      <button class="btn btn-primary" bindtap="goToShop">去购物</button>
+    </view>
+
+    <!-- 订单卡片 -->
+    <view class="order-card" wx:for="{{filteredOrders}}" wx:key="_id">
+      <!-- 订单头部 -->
+      <view class="order-header">
+        <view class="order-info">
+          <text class="order-number">订单号：{{item.orderNumber}}</text>
+          <text class="order-time">{{item.createTimeText}}</text>
+        </view>
+        <view class="order-status {{item.statusClass}}">
+          <text>{{item.statusText}}</text>
+        </view>
+      </view>
+
+      <!-- 商品列表 -->
+      <view class="order-products" bindtap="viewOrderDetail" data-order="{{item}}">
+        <view class="product-item" wx:for="{{item.products}}" wx:for-item="product" wx:key="productId">
+          <image class="product-image" src="{{product.image}}" mode="aspectFill"></image>
+          <view class="product-info">
+            <text class="product-name">{{product.name}}</text>
+            <text class="product-spec" wx:if="{{product.spec}}">{{product.spec}}</text>
+            <view class="product-price-qty">
+              <text class="product-price">¥{{product.price}}</text>
+              <text class="product-qty">×{{product.quantity}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 更多商品提示 -->
+        <view class="more-products" wx:if="{{item.products.length > 2}}">
+          <text>共{{item.products.length}}件商品</text>
+        </view>
+      </view>
+
+      <!-- 订单金额 -->
+      <view class="order-amount">
+        <text class="amount-label">实付款：</text>
+        <text class="amount-value">{{item.totalAmountText}}</text>
+      </view>
+
+      <!-- 订单操作 -->
+      <view class="order-actions">
+        <!-- 取消订单 -->
+        <button class="action-btn btn-cancel" 
+                wx:if="{{item.canCancel}}"
+                bindtap="cancelOrder"
+                data-order="{{item}}">
+          取消订单
+        </button>
+        
+        <!-- 立即支付 -->
+        <button class="action-btn btn-pay" 
+                wx:if="{{item.canPay}}"
+                bindtap="payOrder"
+                data-order="{{item}}">
+          立即支付
+        </button>
+        
+        <!-- 确认收货 -->
+        <button class="action-btn btn-confirm" 
+                wx:if="{{item.canConfirm}}"
+                bindtap="confirmOrder"
+                data-order="{{item}}">
+          确认收货
+        </button>
+        
+        <!-- 评价 -->
+        <button class="action-btn btn-evaluate" 
+                wx:if="{{item.canEvaluate}}"
+                bindtap="evaluateOrder"
+                data-order="{{item}}">
+          评价
+        </button>
+        
+        <!-- 查看详情 -->
+        <button class="action-btn btn-detail" 
+                bindtap="viewOrderDetail"
+                data-order="{{item}}">
+          查看详情
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-more" wx:if="{{loading && filteredOrders.length > 0}}">
+    <text>加载中...</text>
+  </view>
+  
+  <view class="no-more" wx:if="{{!hasMore && filteredOrders.length > 0}}">
+    <text>没有更多订单了</text>
+  </view>
+</view>
+
+<!-- 客服按钮 -->
+<view class="service-btn" bindtap="contactService">
+  <image src="/images/icons/service.png"></image>
+</view>

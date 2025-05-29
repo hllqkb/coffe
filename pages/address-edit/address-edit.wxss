@@ -1,0 +1,245 @@
+/* 地址编辑页面样式 */
+.address-edit-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding-bottom: 200rpx;
+}
+
+/* 表单区域 */
+.form-section {
+  background-color: #fff;
+  margin-bottom: 20rpx;
+  padding: 32rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 32rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+/* 表单项 */
+.form-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 32rpx;
+  min-height: 80rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  width: 160rpx;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 80rpx;
+  flex-shrink: 0;
+}
+
+.form-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  background-color: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 24rpx 20rpx;
+  border: 1rpx solid #eee;
+}
+
+.form-input:focus {
+  border-color: #4CAF50;
+  background-color: #fff;
+}
+
+.form-textarea {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  background-color: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 24rpx 20rpx;
+  border: 1rpx solid #eee;
+  min-height: 120rpx;
+}
+
+.form-textarea:focus {
+  border-color: #4CAF50;
+  background-color: #fff;
+}
+
+/* 地区选择 */
+.region-item {
+  align-items: center;
+}
+
+.region-picker {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 24rpx 20rpx;
+  border: 1rpx solid #eee;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.picker-text.placeholder {
+  color: #999;
+}
+
+.arrow-icon {
+  width: 24rpx;
+  height: 24rpx;
+  opacity: 0.6;
+}
+
+/* 定位区域 */
+.location-section {
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.location-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f8f0;
+  color: #4CAF50;
+  border: 1rpx solid #4CAF50;
+  border-radius: 40rpx;
+  padding: 16rpx 32rpx;
+  font-size: 26rpx;
+}
+
+.location-btn image {
+  width: 28rpx;
+  height: 28rpx;
+  margin-right: 12rpx;
+}
+
+/* 地址标签 */
+.tag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.tag-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  height: 120rpx;
+  background-color: #f8f8f8;
+  border: 2rpx solid #eee;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+}
+
+.tag-option.active {
+  background-color: #e8f5e8;
+  border-color: #4CAF50;
+}
+
+.tag-option image {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 12rpx;
+}
+
+.tag-option text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.tag-option.active text {
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+/* 默认地址设置 */
+.default-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-title {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.setting-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.switch-container {
+  margin-left: 20rpx;
+}
+
+/* 底部操作按钮 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  padding: 20rpx;
+  border-top: 1rpx solid #eee;
+  display: flex;
+  gap: 20rpx;
+  z-index: 100;
+}
+
+.delete-btn {
+  flex: 1;
+  background-color: #fff;
+  color: #ff6b6b;
+  border: 2rpx solid #ff6b6b;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+}
+
+.save-btn {
+  flex: 2;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+}
+
+.save-btn.loading {
+  background-color: #ccc;
+}
+
+.save-btn:disabled {
+  background-color: #ccc;
+  color: #999;
+}
+
+/* 当只有保存按钮时 */
+.bottom-actions .save-btn:only-child {
+  flex: 1;
+}

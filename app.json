@@ -9,8 +9,17 @@
     "pages/profile/profile",
     "pages/signin/signin",
     "pages/shop/shop",
-    "pages/comments/comments"
+    "pages/comments/comments",
+    "pages/address/address",
+    "pages/address-edit/address-edit",
+    "pages/orders/orders"
   ],
+  "permission": {
+  "scope.userLocation": {
+    "desc": "你的位置信息将用于小程序位置接口的效果展示"
+}
+  },
+
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#8B4513",
@@ -56,6 +65,7 @@
       }
     ]
   },
+  
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"

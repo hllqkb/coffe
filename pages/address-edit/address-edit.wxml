@@ -1,0 +1,114 @@
+<!--地址编辑页面-->
+<view class="address-edit-container">
+  <form>
+    <!-- 收货人信息 -->
+    <view class="form-section">
+      <view class="section-title">收货人信息</view>
+      
+      <view class="form-item">
+        <view class="form-label">收货人</view>
+        <input class="form-input" 
+               placeholder="请输入收货人姓名"
+               value="{{formData.name}}"
+               data-field="name"
+               bindinput="onInputChange"
+               maxlength="20" />
+      </view>
+      
+      <view class="form-item">
+        <view class="form-label">手机号码</view>
+        <input class="form-input" 
+               placeholder="请输入手机号码"
+               value="{{formData.phone}}"
+               data-field="phone"
+               bindinput="onInputChange"
+               type="number"
+               maxlength="11" />
+      </view>
+    </view>
+
+    <!-- 收货地址 -->
+    <view class="form-section">
+      <view class="section-title">收货地址</view>
+      
+      <!-- 地区选择 -->
+      <view class="form-item region-item">
+        <view class="form-label">所在地区</view>
+        <picker mode="region" 
+                value="{{regionValue}}"
+                bindchange="onRegionChange"
+                class="region-picker">
+          <view class="picker-text {{formData.province ? '' : 'placeholder'}}">
+            {{regionText}}
+          </view>
+          <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+        </picker>
+      </view>
+      
+      <!-- 详细地址 -->
+      <view class="form-item">
+        <view class="form-label">详细地址</view>
+        <textarea class="form-textarea" 
+                  placeholder="请输入详细地址（街道、门牌号等）"
+                  value="{{formData.detail}}"
+                  data-field="detail"
+                  bindinput="onInputChange"
+                  maxlength="100"
+                  auto-height></textarea>
+      </view>
+      
+      <!-- 定位按钮 -->
+      <view class="location-section">
+        <button class="location-btn" bindtap="getCurrentLocation">
+          <image src="/images/icons/location.png"></image>
+          <text>使用当前位置</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 地址标签 -->
+    <view class="form-section">
+      <view class="section-title">地址标签</view>
+      <view class="tag-options">
+        <view class="tag-option {{formData.tag === item.id ? 'active' : ''}}" 
+              wx:for="{{tagOptions}}" 
+              wx:key="id"
+              bindtap="selectTag"
+              data-tag="{{item}}">
+          <image src="{{item.icon}}"></image>
+          <text>{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 默认地址设置 -->
+    <view class="form-section">
+      <view class="default-setting" bindtap="toggleDefault">
+        <view class="setting-info">
+          <text class="setting-title">设为默认地址</text>
+          <text class="setting-desc">每次下单时优先使用该地址</text>
+        </view>
+        <view class="switch-container">
+          <switch checked="{{formData.isDefault}}" color="#4CAF50" />
+        </view>
+      </view>
+    </view>
+  </form>
+
+  <!-- 底部操作按钮 -->
+  <view class="bottom-actions">
+    <!-- 删除按钮（编辑模式） -->
+    <button class="delete-btn" 
+            wx:if="{{isEdit}}"
+            bindtap="deleteAddress">
+      删除地址
+    </button>
+    
+    <!-- 保存按钮 -->
+    <button class="save-btn {{loading ? 'loading' : ''}}" 
+            bindtap="saveAddress"
+            disabled="{{loading}}">
+      {{loading ? '保存中...' : (isEdit ? '保存修改' : '保存地址')}}
+    </button>
+  </view>
+</view>

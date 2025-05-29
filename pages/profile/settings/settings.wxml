@@ -1,0 +1,336 @@
+<!--pages/profile/settings/settings.wxml-->
+<view class="settings-container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">设置</text>
+  </view>
+
+  <!-- 个人信息 -->
+  <view class="section">
+    <view class="section-title">
+      <image src="/images/icons/user.png" class="title-icon"></image>
+      <text>个人信息</text>
+    </view>
+    <view class="setting-list">
+      <view class="setting-item" bindtap="editProfile">
+        <view class="setting-content">
+          <image src="/images/icons/edit.png" class="setting-icon"></image>
+          <text class="setting-text">修改个人资料</text>
+        </view>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+      <view class="setting-item" bindtap="accountSecurity">
+        <view class="setting-content">
+          <image src="/images/icons/security.png" class="setting-icon"></image>
+          <text class="setting-text">账户安全</text>
+        </view>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 通知设置 -->
+  <view class="section">
+    <view class="section-title">
+      <image src="/images/icons/notification.png" class="title-icon"></image>
+      <text>通知设置</text>
+    </view>
+    <view class="setting-list">
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/system.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">系统通知</text>
+            <text class="setting-desc">接收系统重要消息</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.notifications.system}}"
+          data-type="system"
+          bindchange="toggleNotification"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/harvest.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">收获提醒</text>
+            <text class="setting-desc">咖啡成熟时提醒收获</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.notifications.harvest}}"
+          data-type="harvest"
+          bindchange="toggleNotification"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/friend.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">好友动态</text>
+            <text class="setting-desc">好友互动消息提醒</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.notifications.friend}}"
+          data-type="friend"
+          bindchange="toggleNotification"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/promotion.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">活动推广</text>
+            <text class="setting-desc">接收活动和优惠信息</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.notifications.promotion}}"
+          data-type="promotion"
+          bindchange="toggleNotification"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐私设置 -->
+  <view class="section">
+    <view class="section-title">
+      <image src="/images/icons/privacy.png" class="title-icon"></image>
+      <text>隐私设置</text>
+    </view>
+    <view class="setting-list">
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/online.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">显示在线状态</text>
+            <text class="setting-desc">让好友看到您的在线状态</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.privacy.showOnline}}"
+          data-type="showOnline"
+          bindchange="togglePrivacy"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/invite.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">允许好友邀请</text>
+            <text class="setting-desc">允许好友邀请您参与活动</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.privacy.allowFriendInvite}}"
+          data-type="allowFriendInvite"
+          bindchange="togglePrivacy"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/garden.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">公开花园</text>
+            <text class="setting-desc">允许其他人访问您的花园</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.privacy.showGarden}}"
+          data-type="showGarden"
+          bindchange="togglePrivacy"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 游戏设置 -->
+  <view class="section">
+    <view class="section-title">
+      <image src="/images/icons/game.png" class="title-icon"></image>
+      <text>游戏设置</text>
+    </view>
+    <view class="setting-list">
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/auto.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">自动收获</text>
+            <text class="setting-desc">咖啡成熟后自动收获</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.game.autoHarvest}}"
+          data-type="autoHarvest"
+          bindchange="toggleGame"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/sound.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">音效</text>
+            <text class="setting-desc">开启游戏音效</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.game.soundEffect}}"
+          data-type="soundEffect"
+          bindchange="toggleGame"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/vibration.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">震动反馈</text>
+            <text class="setting-desc">操作时提供震动反馈</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.game.vibration}}"
+          data-type="vibration"
+          bindchange="toggleGame"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-content">
+          <image src="/images/icons/music.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">背景音乐</text>
+            <text class="setting-desc">播放背景音乐</text>
+          </view>
+        </view>
+        <switch 
+          class="setting-switch" 
+          checked="{{settings.game.backgroundMusic}}"
+          data-type="backgroundMusic"
+          bindchange="toggleGame"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 显示设置 -->
+  <view class="section">
+    <view class="section-title">
+      <image src="/images/icons/display.png" class="title-icon"></image>
+      <text>显示设置</text>
+    </view>
+    <view class="setting-list">
+      <view class="setting-item" bindtap="selectTheme">
+        <view class="setting-content">
+          <image src="/images/icons/theme.png" class="setting-icon"></image>
+          <text class="setting-text">主题模式</text>
+        </view>
+        <view class="setting-value">
+          <text class="value-text">
+            {{settings.display.theme === 'auto' ? '跟随系统' : settings.display.theme === 'light' ? '浅色模式' : '深色模式'}}
+          </text>
+          <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+        </view>
+      </view>
+      <view class="setting-item" bindtap="selectLanguage">
+        <view class="setting-content">
+          <image src="/images/icons/language.png" class="setting-icon"></image>
+          <text class="setting-text">语言</text>
+        </view>
+        <view class="setting-value">
+          <text class="value-text">
+            {{settings.display.language === 'zh-CN' ? '简体中文' : settings.display.language === 'zh-TW' ? '繁體中文' : 'English'}}
+          </text>
+          <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+        </view>
+      </view>
+      <view class="setting-item" bindtap="selectFontSize">
+        <view class="setting-content">
+          <image src="/images/icons/font.png" class="setting-icon"></image>
+          <text class="setting-text">字体大小</text>
+        </view>
+        <view class="setting-value">
+          <text class="value-text">
+            {{settings.display.fontSize === 'small' ? '小' : settings.display.fontSize === 'medium' ? '中' : '大'}}
+          </text>
+          <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="section">
+    <view class="section-title">
+      <image src="/images/icons/data.png" class="title-icon"></image>
+      <text>数据管理</text>
+    </view>
+    <view class="setting-list">
+      <view class="setting-item" bindtap="clearCache">
+        <view class="setting-content">
+          <image src="/images/icons/cache.png" class="setting-icon"></image>
+          <view class="setting-info">
+            <text class="setting-text">清理缓存</text>
+            <text class="setting-desc">当前缓存：{{cacheSize}}</text>
+          </view>
+        </view>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+      <view class="setting-item" bindtap="backupData">
+        <view class="setting-content">
+          <image src="/images/icons/backup.png" class="setting-icon"></image>
+          <text class="setting-text">备份数据</text>
+        </view>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+      <view class="setting-item" bindtap="restoreData">
+        <view class="setting-content">
+          <image src="/images/icons/restore.png" class="setting-icon"></image>
+          <text class="setting-text">恢复数据</text>
+        </view>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他设置 -->
+  <view class="section">
+    <view class="section-title">
+      <image src="/images/icons/other.png" class="title-icon"></image>
+      <text>其他</text>
+    </view>
+    <view class="setting-list">
+      <view class="setting-item" bindtap="resetSettings">
+        <view class="setting-content">
+          <image src="/images/icons/reset.png" class="setting-icon"></image>
+          <text class="setting-text">重置设置</text>
+        </view>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+      <view class="setting-item danger" bindtap="deleteAccount">
+        <view class="setting-content">
+          <image src="/images/icons/delete.png" class="setting-icon"></image>
+          <text class="setting-text">注销账户</text>
+        </view>
+        <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text class="version-text">咖啡种植园 v1.0.0</text>
+    <text class="build-text">Build 20240115</text>
+  </view>
+</view>

@@ -113,68 +113,57 @@ Page({
 
   // 加载内容
   async loadContent() {
-    if (this.data.loading || !this.data.hasMore) return;
-
+    if (this.data.loading) return;
+    
     this.setData({ loading: true });
-
+    
     try {
-      const db = wx.cloud.database();
-      const { searchKeyword, activeCategory, currentPage, pageSize } = this.data;
+      const result = await wx.cloud.callFunction({
+        name: 'knowledgeManager',
+        data: {
+          action: 'getContent',
+          page: this.data.currentPage,
+          limit: this.data.pageSize,
+          category: this.data.activeCategory,
+          keyword: this.data.searchKeyword
+        }
+      });
       
-      // 构建查询条件
-      let query = db.collection('knowledge_content');
-      
-      // 搜索条件
-      if (searchKeyword) {
-        query = query.where({
-          $or: [
-            { title: db.RegExp({ regexp: searchKeyword, options: 'i' }) },
-            { content: db.RegExp({ regexp: searchKeyword, options: 'i' }) },
-            { tags: db.RegExp({ regexp: searchKeyword, options: 'i' }) }
-          ]
+      if (result.result.success) {
+        const newContent = result.result.data;
+        
+        this.setData({
+          contentList: [...this.data.contentList, ...newContent],
+          currentPage: this.data.currentPage + 1,
+          hasMore: newContent.length >= this.data.pageSize
+        });
+      } else {
+        wx.showToast({
+          title: result.result.message || '加载失败',
+          icon: 'none'
         });
       }
-      
-      // 分类条件
-      if (activeCategory !== 'all') {
-        query = query.where({ category: activeCategory });
-      }
-      
-      const { data } = await query
-        .orderBy('publishTime', 'desc')
-        .skip((currentPage - 1) * pageSize)
-        .limit(pageSize)
-        .get();
-
-      // 处理数据
-      const processedData = data.map(item => ({
-        ...item,
-        publishTime: this.formatTime(item.publishTime),
-        viewCount: this.formatNumber(item.viewCount || 0),
-        likeCount: this.formatNumber(item.likeCount || 0),
-        commentCount: this.formatNumber(item.commentCount || 0)
-      }));
-
-      this.setData({
-        contentList: currentPage === 1 ? processedData : [...this.data.contentList, ...processedData],
-        currentPage: currentPage + 1,
-        hasMore: data.length === pageSize,
-        loading: false
-      });
-
     } catch (error) {
       console.error('加载内容失败:', error);
       wx.showToast({
         title: '加载失败',
         icon: 'none'
       });
+    } finally {
       this.setData({ loading: false });
     }
   },
 
   // 加载更多
+  loadMore() {
+    if (this.data.hasMore && !this.data.loading) {
+      this.loadContent();
+    }
+  },
+
+  // 加载更多 (兼容旧的 onLoadMore 调用)
   onLoadMore() {
-    this.loadContent();
+    this.loadMore();
   },
 
   // 下拉刷新

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <defs>
+    <linearGradient id="waterMagic" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9370DB;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8A2BE2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4B0082;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="sparkle" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <rect width="300" height="300" fill="url(#waterMagic)"/>
+  <circle cx="150" cy="120" r="60" fill="rgba(255,255,255,0.3)"/>
+  <path d="M150 80 Q130 100 150 140 Q170 100 150 80" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="120" cy="100" r="4" fill="url(#sparkle)"/>
+  <circle cx="180" cy="140" r="3" fill="url(#sparkle)"/>
+  <circle cx="160" cy="90" r="2" fill="url(#sparkle)"/>
+  <circle cx="140" cy="150" r="3" fill="url(#sparkle)"/>
+  <text x="150" y="200" text-anchor="middle" fill="white" font-size="18" font-family="Arial">魔法水滴</text>
+  <text x="150" y="220" text-anchor="middle" fill="white" font-size="14" font-family="Arial">Magic Water</text>
+</svg>

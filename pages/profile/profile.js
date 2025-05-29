@@ -366,6 +366,34 @@ Page({
     });
   },
 
+  // 关闭编辑模态框并尝试保存
+  async saveProfileOnModalClose() {
+    if (this.data.saving) return; // 防止重复保存
+
+    // 检查是否有修改
+    const { avatarUrl, nickName, signature } = this.data.editForm;
+    const { userInfo } = this.data;
+    const hasChanged = avatarUrl !== userInfo.avatarUrl || 
+                       nickName !== userInfo.nickName || 
+                       signature !== userInfo.signature;
+
+    if (hasChanged) {
+      await this.saveProfile(); // 调用已有的保存方法
+    }
+    this.setData({ showEditModal: false });
+  },
+
+  // 关闭编辑模态框
+  closeEditModal() {
+    this.setData({ showEditModal: false });
+  },
+
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 仅用于阻止事件冒泡
+    return;
+  },
+
   // 保存资料
   async saveProfile() {
     const { editForm } = this.data;
@@ -448,15 +476,23 @@ Page({
   // 导航到订单页面
   navigateToOrders() {
     wx.navigateTo({
-      url: '/pages/profile/orders/orders'
-    });
+      url: '/pages/orders/orders'
+    })
   },
 
-  // 导航到地址页面
+  // 导航到地址管理
   navigateToAddress() {
     wx.navigateTo({
-      url: '/pages/profile/address/address'
-    });
+      url: '/pages/address/address'
+    })
+  },
+
+  // 导航到不同状态的订单
+  navigateToOrdersByStatus(e) {
+    const status = e.currentTarget.dataset.status
+    wx.navigateTo({
+      url: `/pages/orders/orders?status=${status}`
+    })
   },
 
   // 导航到邀请页面
@@ -494,13 +530,7 @@ Page({
     });
   },
 
-  // 关闭编辑模态框
-  closeEditModal() {
-    this.setData({
-      showEditModal: false,
-      saving: false
-    });
-  },
+
 
   // 关闭成就模态框
   closeAchievementModal() {

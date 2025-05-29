@@ -1,0 +1,116 @@
+<!--pages/profile/feedback/feedback.wxml-->
+<view class="feedback-container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">意见反馈</text>
+    <text class="page-subtitle">您的建议是我们前进的动力</text>
+  </view>
+
+  <!-- 反馈类型选择 -->
+  <view class="feedback-types">
+    <text class="section-title">反馈类型</text>
+    <view class="type-options">
+      <view 
+        class="type-option {{feedbackType === item.id ? 'active' : ''}}"
+        wx:for="{{typeOptions}}"
+        wx:key="id"
+        data-type="{{item.id}}"
+        bindtap="selectFeedbackType"
+      >
+        <image src="{{item.icon}}" class="type-icon"></image>
+        <text class="type-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 反馈内容 -->
+  <view class="feedback-content">
+    <text class="section-title">反馈内容 <text class="required">*</text></text>
+    <textarea
+      class="content-input"
+      placeholder="请详细描述您遇到的问题或建议，至少10个字符"
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="500"
+      show-confirm-bar="{{false}}"
+      auto-height
+    ></textarea>
+    <view class="char-count">{{content.length}}/500</view>
+  </view>
+
+  <!-- 图片上传 -->
+  <view class="image-upload">
+    <text class="section-title">相关图片 <text class="optional">(可选，最多3张)</text></text>
+    <view class="image-list">
+      <view 
+        class="image-item"
+        wx:for="{{images}}"
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="previewImage"
+      >
+        <image src="{{item.path}}" class="uploaded-image"></image>
+        <view class="delete-btn" data-index="{{index}}" bindtap="deleteImage" catchtap="deleteImage">
+          <image src="/images/icons/close.png" class="delete-icon"></image>
+        </view>
+      </view>
+      
+      <view class="add-image-btn" bindtap="chooseImage" wx:if="{{images.length < 3}}">
+        <image src="/images/icons/add.png" class="add-icon"></image>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="contact-info">
+    <text class="section-title">联系方式 <text class="optional">(可选)</text></text>
+    <input
+      class="contact-input"
+      placeholder="请输入您的微信号、手机号或邮箱"
+      value="{{contact}}"
+      bindinput="onContactInput"
+      maxlength="50"
+    />
+    <text class="contact-tip">填写联系方式，我们会及时回复您</text>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button 
+      class="submit-btn {{submitting ? 'submitting' : ''}}"
+      bindtap="submitFeedback"
+      disabled="{{submitting}}"
+    >
+      {{submitting ? '提交中...' : '提交反馈'}}
+    </button>
+  </view>
+
+  <!-- 其他操作 -->
+  <view class="other-actions">
+    <view class="action-item" bindtap="viewFeedbackHistory">
+      <image src="/images/icons/history.png" class="action-icon"></image>
+      <text class="action-text">查看反馈历史</text>
+      <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+    </view>
+    
+    <view class="action-item" bindtap="contactService">
+      <image src="/images/icons/service.png" class="action-icon"></image>
+      <text class="action-text">联系客服</text>
+      <image src="/images/icons/arrow-right.png" class="arrow-icon"></image>
+    </view>
+  </view>
+
+  <!-- 温馨提示 -->
+  <view class="tips">
+    <view class="tips-title">
+      <image src="/images/icons/info.png" class="tips-icon"></image>
+      <text>温馨提示</text>
+    </view>
+    <view class="tips-content">
+      <text class="tip-item">• 我们会认真对待每一条反馈</text>
+      <text class="tip-item">• 处理时间通常为1-3个工作日</text>
+      <text class="tip-item">• 留下联系方式可获得更及时的回复</text>
+    </view>
+  </view>
+</view>

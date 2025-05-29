@@ -1,2 +1,207 @@
-<!--pages/signin/signin.wxml-->
-<text>pages/signin/signin.wxml</text>
+<!--pages/checkin/checkin.wxml-->
+<view class="checkin-container {{loading ? 'loading' : ''}}">
+  <!-- 加载状态 -->
+  <view class="loading-overlay" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+
+  <!-- 顶部背景和统计 -->
+  <view class="header-section">
+    <image class="header-bg" src="{{checkinBgPath}}" mode="aspectFill"></image>
+    <view class="header-content">
+      <view class="user-info">
+        <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"></image>
+        <view class="user-details">
+          <view class="nickname">{{userInfo.nickName || '咖啡爱好者'}}</view>
+          <view class="checkin-stats">
+            <text>已连续签到 {{continuousDays}} 天</text>
+            <text>本月已签 {{monthDays}} 天</text>
+          </view>
+        </view>
+      </view>
+      <view class="total-days">总签到 {{totalDays}} 天</view>
+    </view>
+  </view>
+
+  <!-- 签到日历 -->
+  <view class="calendar-section">
+    <view class="calendar-header">
+      <view class="month-switcher" bindtap="prevMonth">
+        <image src="{{arrowLeftPath}}"></image>
+      </view>
+      <view class="current-month">{{currentYear}}年 {{currentMonth}}月</view>
+      <view class="month-switcher" bindtap="nextMonth">
+        <image src="{{arrowRightPath}}"></image>
+      </view>
+    </view>
+    <view class="weekdays">
+      <view class="weekday" wx:for="{{weekdays}}" wx:key="*this">{{item}}</view>
+    </view>
+    <view class="calendar-days">
+      <view class="calendar-day {{item.isCurrentMonth ? '' : 'disabled'}} {{item.hasCheckedIn ? 'checked' : ''}} {{item.isToday ? 'today' : ''}}"
+            wx:for="{{calendarDays}}" 
+            wx:key="dateString"
+            data-date="{{item.dateString}}"
+            bindtap="onDateTap">
+        <view class="day-number">{{item.date}}</view>
+        <view class="checked-marker" wx:if="{{item.hasCheckedIn}}"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 每日任务 -->
+  <view class="daily-tasks-section">
+    <view class="section-title">每日任务</view>
+    <view class="task-list">
+      <view class="task-item {{item.completed ? 'completed' : ''}}" 
+            wx:for="{{dailyTasks}}" 
+            wx:key="id"
+            data-task-id="{{item.id}}"
+            bindtap="onTaskTap">
+        <view class="task-icon">
+          <image src="{{item.icon}}"></image>
+        </view>
+        <view class="task-info">
+          <view class="task-title">{{item.title}}</view>
+          <view class="task-description">{{item.description}}</view>
+          <view class="task-progress">
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{(item.progress / item.target) * 100}}%"></view>
+            </view>
+            <view class="progress-text">{{item.progress}}/{{item.target}}</view>
+          </view>
+        </view>
+        <view class="task-reward">
+          <image src="{{item.reward.icon}}"></image>
+          <text>+{{item.reward.amount}}</text>
+        </view>
+        <view class="task-status {{item.status}}">
+          <block wx:if="{{item.status === 'completed'}}">已完成</block>
+          <block wx:elif="{{item.status === 'available'}}">进行中</block>
+          <block wx:else>未解锁</block>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 签到按钮和奖励 -->
+  <view class="action-section">
+    <button class="checkin-btn {{todayChecked ? 'checked' : ''}} {{checking ? 'checking' : ''}}"
+            bindtap="onCheckin"
+            disabled="{{todayChecked || checking}}">
+      <block wx:if="{{checking}}">签到中...</block>
+      <block wx:elif="{{todayChecked}}">今日已签到</block>
+      <block wx:else>立即签到</block>
+    </button>
+    <view class="today-reward" wx:if="{{!todayChecked && todayRewards.length > 0}}">
+      <text>今日签到可获得：</text>
+      <view class="reward-item" wx:for="{{todayRewards}}" wx:key="type">
+        <image src="{{item.icon}}"></image>
+        <text>{{item.name}} x{{item.amount}}</text>
+      </view>
+    </view>
+    <view class="streak-rewards" wx:if="{{streakRewards.length > 0}}">
+      <text>连续签到奖励：</text>
+      <view class="reward-item" wx:for="{{streakRewards}}" wx:key="days">
+        <image src="{{item.icon}}"></image>
+        <text>连签{{item.days}}天: {{item.name}} x{{item.amount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 签到规则和历史 -->
+  <view class="info-section">
+    <view class="info-tab">
+      <view class="tab-item {{activeTab === 'rules' ? 'active' : ''}}" bindtap="switchTab" data-tab="rules">签到规则</view>
+      <view class="tab-item {{activeTab === 'history' ? 'active' : ''}}" bindtap="switchTab" data-tab="history">签到历史</view>
+      <view class="tab-item {{activeTab === 'rewards' ? 'active' : ''}}" bindtap="switchTab" data-tab="rewards">奖励记录</view>
+    </view>
+
+    <view class="tab-content" wx:if="{{activeTab === 'rules'}}">
+      <view class="rules-list">
+        <view class="rule-item" wx:for="{{checkinRules}}" wx:key="index">
+          <view class="rule-title">{{item.title}}</view>
+          <view class="rule-description">{{item.description}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="tab-content" wx:if="{{activeTab === 'history'}}">
+      <scroll-view scroll-y class="history-scroll">
+        <view class="history-list" wx:if="{{checkinHistory.length > 0}}">
+          <view class="history-item" wx:for="{{checkinHistory}}" wx:key="checkinTime">
+            <view class="history-date">{{item.dateText}} {{item.timeText}}</view>
+            <view class="history-rewards">
+              <text>获得：</text>
+              <view class="reward-tag" wx:for="{{item.rewards}}" wx:for-item="reward" wx:key="type">
+                {{reward.name}} x{{reward.amount}}
+              </view>
+            </view>
+            <view class="history-streak">连续签到 {{item.continuousDays}} 天</view>
+          </view>
+        </view>
+        <view class="empty-history" wx:else>
+          <image src="/images/empty-history.png"></image>
+          <text>暂无签到记录</text>
+        </view>
+      </scroll-view>
+      <view class="view-all-history" bindtap="viewAllHistory" wx:if="{{checkinHistory.length >= 10}}">查看全部历史</view>
+    </view>
+    
+    <view class="tab-content" wx:if="{{activeTab === 'rewards'}}">
+      <scroll-view scroll-y class="history-scroll">
+        <view class="reward-history-list" wx:if="{{rewardHistory.length > 0}}">
+          <view class="reward-history-item" wx:for="{{rewardHistory}}" wx:key="timestamp">
+            <view class="reward-info">
+              <image class="reward-icon" src="{{item.icon}}"></image>
+              <view class="reward-details">
+                <view class="reward-name">{{item.name}}</view>
+                <view class="reward-source">来源: {{item.source || '签到奖励'}}</view>
+              </view>
+            </view>
+            <view class="reward-amount {{item.type === 'coupon' ? 'coupon' : ''}}">
+              +{{item.amount}} {{item.unit || ''}}
+            </view>
+            <view class="reward-time">{{item.timeText}}</view>
+          </view>
+        </view>
+        <view class="empty-history" wx:else>
+          <image src="/images/empty-rewards.png"></image>
+          <text>暂无奖励记录</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 签到成功模态框 -->
+  <view class="modal-overlay success-modal {{showSuccessModal ? 'show' : ''}}" bindtap="closeSuccessModal">
+    <view class="modal-content animated" catchtap="stopPropagation">
+      <image class="modal-bg" src="{{successBgPath}}" mode="aspectFill"></image>
+      <view class="modal-header">
+        <text class="modal-title">签到成功！</text>
+        <view class="close-btn" bindtap="closeSuccessModal">✕</view>
+      </view>
+      <view class="modal-body">
+        <view class="rewards-list">
+          <view class="reward-item" wx:for="{{successRewards}}" wx:key="type">
+            <image class="reward-icon" src="{{item.icon}}"></image>
+            <view class="reward-text">
+              <view class="reward-name">{{item.name}}</view>
+              <view class="reward-amount">+{{item.amount}}</view>
+            </view>
+          </view>
+        </view>
+        <view class="streak-info" wx:if="{{newStreak}}">
+          <image class="streak-icon" src="/images/streak-icon.png"></image>
+          <text>{{streakEncourage}}</text>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="share-btn" open-type="share">分享喜悦</button>
+        <button class="confirm-btn" bindtap="closeSuccessModal">开心收下</button>
+      </view>
+    </view>
+  </view>
+
+</view>

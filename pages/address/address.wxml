@@ -1,0 +1,86 @@
+<!--地址管理页面-->
+<view class="address-container">
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{addresses.length === 0 && !loading}}">
+    <image src="/images/empty-address.png" class="empty-image"></image>
+    <text class="empty-text">还没有收货地址</text>
+    <text class="empty-desc">添加地址后可以更快下单</text>
+  </view>
+
+  <!-- 地址列表 -->
+  <view class="address-list" wx:else>
+    <view class="address-item" 
+          wx:for="{{addresses}}" 
+          wx:key="_id"
+          bindtap="{{isSelectMode ? 'selectAddress' : ''}}"
+          data-address="{{item}}">
+      
+      <!-- 选择模式下的选中状态 -->
+      <view class="select-indicator" wx:if="{{isSelectMode}}">
+        <view class="radio {{selectedAddressId === item._id ? 'checked' : ''}}"></view>
+      </view>
+      
+      <!-- 地址信息 -->
+      <view class="address-info">
+        <!-- 收货人和电话 -->
+        <view class="contact-info">
+          <text class="contact-name">{{item.name}}</text>
+          <text class="contact-phone">{{item.phone}}</text>
+          <view class="default-badge" wx:if="{{item.isDefault}}">默认</view>
+        </view>
+        
+        <!-- 详细地址 -->
+        <view class="address-detail">
+          <text>{{item.fullAddress}}</text>
+        </view>
+        
+        <!-- 地址标签 -->
+        <view class="address-tags" wx:if="{{item.tag}}">
+          <text class="address-tag">{{item.tag}}</text>
+        </view>
+      </view>
+      
+      <!-- 操作按钮（非选择模式） -->
+      <view class="address-actions" wx:if="{{!isSelectMode}}">
+        <button class="action-btn" 
+                bindtap="setDefaultAddress" 
+                data-address="{{item}}"
+                catchtap="">
+          {{item.isDefault ? '默认地址' : '设为默认'}}
+        </button>
+        <button class="action-btn" 
+                bindtap="editAddress" 
+                data-address="{{item}}"
+                catchtap="">
+          编辑
+        </button>
+        <button class="action-btn delete-btn" 
+                bindtap="deleteAddress" 
+                data-address="{{item}}"
+                catchtap="">
+          删除
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作区 -->
+  <view class="bottom-actions">
+    <!-- 快速定位按钮 -->
+    <button class="location-btn" bindtap="getCurrentLocation">
+      <image src="/images/icons/location.png"></image>
+      <text>使用当前位置</text>
+    </button>
+    
+    <!-- 添加地址按钮 -->
+    <button class="add-btn" bindtap="addAddress">
+      <image src="/images/icons/add.png"></image>
+      <text>添加新地址</text>
+    </button>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <view class="loading-text">加载中...</view>
+</view>

@@ -21,6 +21,8 @@ exports.main = async (event, context) => {
         return await getPostDetail(event)
       case 'createPost':
         return await createPost(event, wxContext)
+      case 'updatePost':
+        return await updatePost(event, wxContext)
       case 'likePost':
         return await likePost(event, wxContext)
       case 'commentPost':
@@ -68,10 +70,47 @@ async function getPosts(event) {
     .limit(limit)
     .get()
   
-  // 为每个帖子添加id字段
-  const postsWithId = result.data.map(post => ({
-    ...post,
-    id: post._id
+  // 为每个帖子添加id字段并获取云存储文件的临时链接
+  const postsWithId = await Promise.all(result.data.map(async (post) => {
+    let images = post.images || []
+    let video = post.video || ''
+    
+    // 获取图片的临时链接
+    if (images.length > 0) {
+      try {
+        const imagePromises = images.map(async (fileID) => {
+          if (fileID.startsWith('cloud://')) {
+            const tempUrlResult = await cloud.getTempFileURL({
+              fileList: [fileID]
+            })
+            return tempUrlResult.fileList[0].tempFileURL
+          }
+          return fileID
+        })
+        images = await Promise.all(imagePromises)
+      } catch (error) {
+        console.error('获取图片临时链接失败:', error)
+      }
+    }
+    
+    // 获取视频的临时链接
+    if (video && video.startsWith('cloud://')) {
+      try {
+        const tempUrlResult = await cloud.getTempFileURL({
+          fileList: [video]
+        })
+        video = tempUrlResult.fileList[0].tempFileURL
+      } catch (error) {
+        console.error('获取视频临时链接失败:', error)
+      }
+    }
+    
+    return {
+      ...post,
+      id: post._id,
+      images,
+      video
+    }
   }))
   
   return {
@@ -83,13 +122,35 @@ async function getPosts(event) {
 
 // 创建帖子
 async function createPost(event, wxContext) {
-  const { content, images = [], video = '', userInfo } = event
+  const { content, images = [], video = '' } = event
   
-  if (!content || content.trim() === '') {
+  if (!content || content.trim().length === 0) {
     return {
       success: false,
-      message: '帖子内容不能为空'
+      message: '内容不能为空'
     }
+  }
+  
+  // 从数据库获取用户最新信息
+  let userInfo = {
+    nickName: '匿名用户',
+    avatarUrl: '/images/default-avatar.png'
+  }
+  
+  try {
+    const userResult = await db.collection('users').where({
+      openid: wxContext.OPENID
+    }).get()
+    
+    if (userResult.data && userResult.data.length > 0) {
+      const userData = userResult.data[0]
+      userInfo = {
+        nickName: userData.nickName || '匿名用户',
+        avatarUrl: userData.avatarUrl || '/images/default-avatar.png'
+      }
+    }
+  } catch (error) {
+    console.log('获取用户信息失败，使用默认信息:', error)
   }
   
   const postData = {
@@ -98,8 +159,8 @@ async function createPost(event, wxContext) {
     video,
     author: {
       openid: wxContext.OPENID,
-      nickname: userInfo.nickName || '匿名用户',
-      avatar: userInfo.avatarUrl || '/images/default-avatar.png'
+      nickname: userInfo.nickName,
+      avatar: userInfo.avatarUrl
     },
     likes: [],
     likeCount: 0,
@@ -242,11 +303,47 @@ async function getPostDetail(event) {
       })
       .count()
     
+    // 获取云存储文件的临时链接
+    let images = postResult.data.images || []
+    let video = postResult.data.video || ''
+    
+    // 获取图片的临时链接
+    if (images.length > 0) {
+      try {
+        const imagePromises = images.map(async (fileID) => {
+          if (fileID.startsWith('cloud://')) {
+            const tempUrlResult = await cloud.getTempFileURL({
+              fileList: [fileID]
+            })
+            return tempUrlResult.fileList[0].tempFileURL
+          }
+          return fileID
+        })
+        images = await Promise.all(imagePromises)
+      } catch (error) {
+        console.error('获取图片临时链接失败:', error)
+      }
+    }
+    
+    // 获取视频的临时链接
+    if (video && video.startsWith('cloud://')) {
+      try {
+        const tempUrlResult = await cloud.getTempFileURL({
+          fileList: [video]
+        })
+        video = tempUrlResult.fileList[0].tempFileURL
+      } catch (error) {
+        console.error('获取视频临时链接失败:', error)
+      }
+    }
+    
     // 组装帖子详情数据
     const postDetail = {
       ...postResult.data,
       id: postResult.data._id,
       commentCount: commentCountResult.total,
+      images,
+      video,
       // 格式化时间
       createTime: formatTime(postResult.data.createTime)
     }
@@ -374,12 +471,18 @@ async function likeComment(event, wxContext) {
   }
 }
 
-// 删除帖子
-async function deletePost(event, wxContext) {
-  const { postId } = event
-  const openid = wxContext.OPENID
+// 更新帖子
+async function updatePost(event, wxContext) {
+  const { postId, content, images = [], video = '' } = event
   
-  // 检查帖子是否存在且是否为作者
+  if (!content || content.trim().length === 0) {
+    return {
+      success: false,
+      message: '内容不能为空'
+    }
+  }
+  
+  // 检查帖子是否存在
   const post = await db.collection('community_posts').doc(postId).get()
   
   if (!post.data) {
@@ -389,7 +492,46 @@ async function deletePost(event, wxContext) {
     }
   }
   
-  if (post.data.author.openid !== openid) {
+  // 检查是否为帖子作者
+  if (post.data.author.openid !== wxContext.OPENID) {
+    return {
+      success: false,
+      message: '只能编辑自己的帖子'
+    }
+  }
+  
+  // 更新帖子
+  await db.collection('community_posts').doc(postId).update({
+    data: {
+      content: content.trim(),
+      images,
+      video,
+      updateTime: db.serverDate()
+    }
+  })
+  
+  return {
+    success: true,
+    message: '更新成功'
+  }
+}
+
+// 删除帖子
+async function deletePost(event, wxContext) {
+  const { postId } = event
+  
+  // 检查帖子是否存在
+  const post = await db.collection('community_posts').doc(postId).get()
+  
+  if (!post.data) {
+    return {
+      success: false,
+      message: '帖子不存在'
+    }
+  }
+  
+  // 检查是否为帖子作者
+  if (post.data.author.openid !== wxContext.OPENID) {
     return {
       success: false,
       message: '只能删除自己的帖子'
@@ -401,7 +543,7 @@ async function deletePost(event, wxContext) {
   
   // 删除相关评论
   await db.collection('community_comments').where({
-    postId
+    postId: postId
   }).remove()
   
   return {

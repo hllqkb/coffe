@@ -1,0 +1,262 @@
+/* pages/profile/settings/settings.wxss */
+.settings-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding-bottom: 40rpx;
+}
+
+/* 页面标题 */
+.page-header {
+  padding: 40rpx 30rpx 30rpx;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20rpx;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #8B4513;
+}
+
+/* 设置分组 */
+.section {
+  margin: 20rpx 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  background: #f8f9fa;
+  border-bottom: 1rpx solid #e9ecef;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.title-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 15rpx;
+}
+
+/* 设置列表 */
+.setting-list {
+  background: white;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item:active {
+  background-color: #f8f9fa;
+}
+
+.setting-item.danger {
+  color: #dc3545;
+}
+
+.setting-item.danger .setting-text {
+  color: #dc3545;
+}
+
+.setting-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.setting-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 20rpx;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-text {
+  display: block;
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.setting-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 开关样式 */
+.setting-switch {
+  transform: scale(0.8);
+}
+
+/* 设置值显示 */
+.setting-value {
+  display: flex;
+  align-items: center;
+}
+
+.value-text {
+  font-size: 28rpx;
+  color: #666;
+  margin-right: 15rpx;
+}
+
+.arrow-icon {
+  width: 20rpx;
+  height: 20rpx;
+  opacity: 0.6;
+}
+
+/* 版本信息 */
+.version-info {
+  text-align: center;
+  padding: 40rpx 30rpx;
+  color: #666;
+}
+
+.version-text {
+  display: block;
+  font-size: 26rpx;
+  margin-bottom: 10rpx;
+}
+
+.build-text {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .setting-item {
+    padding: 25rpx 20rpx;
+  }
+  
+  .setting-text {
+    font-size: 28rpx;
+  }
+  
+  .setting-desc {
+    font-size: 22rpx;
+  }
+  
+  .value-text {
+    font-size: 26rpx;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .settings-container {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  }
+  
+  .section {
+    background: #34495e;
+  }
+  
+  .section-title {
+    background: #2c3e50;
+    color: #ecf0f1;
+    border-bottom-color: #4a5f7a;
+  }
+  
+  .setting-list {
+    background: #34495e;
+  }
+  
+  .setting-item {
+    border-bottom-color: #4a5f7a;
+  }
+  
+  .setting-item:active {
+    background-color: #2c3e50;
+  }
+  
+  .setting-text {
+    color: #ecf0f1;
+  }
+  
+  .setting-desc {
+    color: #bdc3c7;
+  }
+  
+  .value-text {
+    color: #bdc3c7;
+  }
+  
+  .page-header {
+    background: rgba(52, 73, 94, 0.9);
+  }
+  
+  .page-title {
+    color: #f39c12;
+  }
+  
+  .version-info {
+    color: #bdc3c7;
+  }
+  
+  .build-text {
+    color: #7f8c8d;
+  }
+}
+
+/* 动画效果 */
+.setting-item {
+  transition: all 0.3s ease;
+}
+
+.setting-switch {
+  transition: all 0.3s ease;
+}
+
+/* 无障碍支持 */
+.setting-item[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* 加载状态 */
+.setting-item.loading {
+  opacity: 0.7;
+}
+
+.setting-item.loading::after {
+  content: '';
+  position: absolute;
+  right: 30rpx;
+  width: 20rpx;
+  height: 20rpx;
+  border: 2rpx solid #8B4513;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
